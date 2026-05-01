@@ -1,0 +1,45 @@
+{
+  "name": "daslab-sdk",
+  "version": "0.0.1",
+  "description": "Three lines and your agent's traces tell you what your agent knew, not just what it did. The scene SDK for AI agents.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".":       "./src/index.ts",
+    "./scene": "./src/scene.ts"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "bun test src/"
+  },
+  "keywords": [
+    "agent",
+    "ai",
+    "llm",
+    "opentelemetry",
+    "otel",
+    "tracing",
+    "observability",
+    "scene",
+    "replay",
+    "eval",
+    "verifiers",
+    "rl"
+  ],
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.9.0"
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/context-async-hooks": "^1.30.0",
+    "@opentelemetry/sdk-trace-base": "^1.30.0",
+    "@types/bun": "latest",
+    "typescript": "^5.6.0"
+  }
+}
