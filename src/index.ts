@@ -20,3 +20,11 @@ export {
   type InferredType,
   type SceneSetOptions,
 } from "./scene.js";
+
+export {
+  sceneDiff,
+  buildSnapshot,
+  type SceneEvent,
+  type SceneSnapshot,
+  type SceneDiff,
+} from "./diff.js";

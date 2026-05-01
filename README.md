@@ -142,21 +142,60 @@ When the active OTel span carries a `daslab.platform` attribute, snapshots also 
 
 Learn more: <https://daslab.dev>
 
+## Try it in the browser
+
+A static scrubber lives in [`viewer/`](./viewer) — a single HTML file (no build step) that visualizes any OTel JSONL with `scene.set` events. Five example traces ship under `viewer/example-traces/`, each mirroring an [AutomationBench](https://github.com/zapier/AutomationBench) domain shape:
+
+- Sales · multi-hop deal routing
+- Support · SLA breach sweep
+- Marketing · campaign performance review
+- HR · new-hire onboarding
+- Simple · gmail triage
+
+```bash
+cd viewer
+python3 -m http.server 5173
+# http://localhost:5173 → pick an example or upload your own JSONL
+```
+
+## Diff between scenes
+
+```ts
+import { sceneDiff, buildSnapshot } from "daslab-sdk";
+
+// Walk a stream of scene events to the moment you care about
+const before = buildSnapshot(events, "ab12cd34ef567890");  // commit_hash
+const after  = buildSnapshot(events, "ff99ee88aa776655");
+
+const d = sceneDiff(before, after);
+// {
+//   added:    { draft: {...} },
+//   removed:  {},
+//   changed:  [ { key: "flagged", before: 0, after: 2 } ],
+//   unchanged: ["inbox", "budget"]
+// }
+```
+
+This is the eval primitive for: comparing two prompts on the same input,
+detecting agent-belief drift mid-run, surfacing exactly what a single tool
+call mutated.
+
 ## Roadmap
 
-v0.0.1 (this release)
+v0.0.2 (current)
 
 - ✅ `scene.set / commit / pending`
 - ✅ Auto widget-type inference
 - ✅ Deterministic content hashing
 - ✅ Graceful no-op without OTel
+- ✅ `sceneDiff` + `buildSnapshot` — attribute-level diff between snapshots
+- ✅ Static HTML scrubber under [`viewer/`](./viewer) with 5 AutomationBench-shaped fixtures
 
 Coming next
 
-- `sceneDiff(hashA, hashB)` — attribute-level diff between two snapshots
-- Static HTML scrubber — drop a JSONL trace into a browser, scrub the timeline. No install
-- AutomationBench integration — turn-by-turn replay of [Zapier's AutomationBench](https://github.com/zapier/AutomationBench) tasks
+- AutomationBench integration — turn-by-turn replay of [Zapier's AutomationBench](https://github.com/zapier/AutomationBench) tasks against real models
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
+- Hosted scrubber on GitHub Pages
 
 ## License
 

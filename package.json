@@ -1,6 +1,6 @@
 {
   "name": "daslab-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Three lines and your agent's traces tell you what your agent knew, not just what it did. The scene SDK for AI agents.",
   "license": "MIT",
   "type": "module",
@@ -8,7 +8,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".":       "./src/index.ts",
-    "./scene": "./src/scene.ts"
+    "./scene": "./src/scene.ts",
+    "./diff":  "./src/diff.ts"
   },
   "files": [
     "src",

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>daslab-sdk · scene scrubber</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+    .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    .scrubber::-webkit-slider-thumb {
+      appearance: none; width: 18px; height: 18px; border-radius: 50%;
+      background: #6366f1; cursor: pointer; border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .scrubber::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%; background: #6366f1;
+      cursor: pointer; border: 2px solid white;
+    }
+    .step-marker { transition: background-color .15s; }
+    .key-changed { box-shadow: 0 0 0 2px #6366f1; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+<header class="border-b bg-white">
+  <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-semibold">daslab-sdk · scene scrubber</h1>
+      <p class="text-sm text-slate-500">See what your agent <span class="italic">knew</span> at every step.</p>
+    </div>
+    <a href="https://github.com/daslabhq/daslab-sdk" class="text-sm text-slate-600 hover:text-slate-900 underline">GitHub →</a>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto p-6">
+
+  <!-- Loader -->
+  <section id="loader" class="space-y-4">
+    <div class="bg-white rounded-lg border border-slate-200 p-6">
+      <h2 class="font-semibold mb-3">Load a trace</h2>
+      <div class="flex gap-3 flex-wrap">
+        <select id="example-picker" class="border border-slate-300 rounded px-3 py-2 text-sm bg-white">
+          <option value="">Pick an example…</option>
+          <option value="example-traces/sales-routing.jsonl">Sales · multi-hop deal routing</option>
+          <option value="example-traces/support-sla.jsonl">Support · SLA breach sweep</option>
+          <option value="example-traces/marketing-campaign.jsonl">Marketing · campaign performance</option>
+          <option value="example-traces/hr-onboarding.jsonl">HR · new-hire onboarding</option>
+          <option value="example-traces/gmail-triage.jsonl">Simple · gmail triage</option>
+        </select>
+        <label class="border border-slate-300 rounded px-3 py-2 text-sm bg-white cursor-pointer hover:bg-slate-50">
+          Upload .jsonl
+          <input type="file" accept=".jsonl,.json,.txt" class="hidden" id="file-input" />
+        </label>
+      </div>
+      <p class="text-xs text-slate-500 mt-3">
+        Or drop a file below, or paste JSONL OTel spans directly:
+      </p>
+      <textarea id="paste-area" class="mt-2 w-full h-24 border border-slate-300 rounded p-2 text-xs mono"
+                placeholder="Paste JSONL (one OTel span per line)"></textarea>
+      <button id="load-pasted" class="mt-2 bg-indigo-600 text-white px-3 py-1.5 rounded text-sm hover:bg-indigo-700">Load pasted</button>
+    </div>
+  </section>
+
+  <!-- Viewer -->
+  <section id="viewer" class="hidden space-y-4 mt-2">
+
+    <!-- Trace info -->
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <div class="text-xs text-slate-500 uppercase tracking-wide">trace</div>
+          <div class="font-semibold" id="trace-name">—</div>
+          <div class="text-xs text-slate-400 mono" id="trace-id">—</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-slate-500 uppercase tracking-wide">scene events</div>
+          <div class="font-semibold text-2xl" id="event-count">0</div>
+        </div>
+        <button id="reset-btn" class="text-sm text-slate-500 underline hover:text-slate-900">load another</button>
+      </div>
+    </div>
+
+    <!-- Scrubber -->
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <span class="text-sm text-slate-500">step</span>
+          <span class="font-semibold mono" id="step-current">0</span>
+          <span class="text-slate-400">/</span>
+          <span class="mono text-slate-500" id="step-total">0</span>
+        </div>
+        <div class="text-sm text-slate-600">
+          <span class="text-slate-400">just changed:</span>
+          <span class="mono font-semibold" id="step-key">—</span>
+        </div>
+        <div class="text-xs text-slate-400 mono" id="step-hash">—</div>
+      </div>
+      <input type="range" id="scrubber" class="scrubber w-full appearance-none h-1.5 bg-slate-200 rounded outline-none" min="0" max="0" step="1" value="0" />
+      <div id="step-markers" class="mt-2 flex gap-0.5"></div>
+    </div>
+
+    <!-- Scene state grid -->
+    <div id="scene-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+  </section>
+
+</main>
+
+<footer class="max-w-6xl mx-auto px-6 py-10 text-xs text-slate-400">
+  daslab-sdk · MIT · <a href="https://github.com/daslabhq/daslab-sdk" class="underline">github.com/daslabhq/daslab-sdk</a>
+</footer>
+
+<script type="module">
+// ============================================================================
+// Parsing — JSONL OTel spans → flat list of scene.set events
+// ============================================================================
+
+function parseJsonl(text) {
+  const spans = [];
+  for (const line of text.split(/\r?\n/)) {
+    const t = line.trim();
+    if (!t) continue;
+    try { spans.push(JSON.parse(t)); }
+    catch (e) { console.warn("Bad JSONL line:", e); }
+  }
+  return spans;
+}
+
+function extractSceneEvents(spans) {
+  const out = [];
+  for (const s of spans) {
+    const traceName = s.name ?? "trace";
+    const traceId   = s.trace_id ?? "—";
+    for (const ev of (s.events ?? [])) {
+      if (ev.name !== "scene.set") continue;
+      const a = ev.attributes ?? {};
+      let parsed;
+      try { parsed = JSON.parse(a["scene.value"]); } catch { parsed = a["scene.value"]; }
+      out.push({
+        traceName,
+        traceId,
+        timestamp:  ev.time_ns ?? 0,
+        key:        a["scene.key"],
+        value:      parsed,
+        type:       a["scene.value.type"],
+        size:       a["scene.value.size"],
+        commitHash: a["scene.commit_hash"],
+        description: a["scene.description"],
+      });
+    }
+  }
+  return out.sort((a, b) => a.timestamp - b.timestamp);
+}
+
+function buildSnapshotAt(events, idx) {
+  // include events 0..idx
+  const m = new Map();
+  for (let i = 0; i <= idx && i < events.length; i++) {
+    m.set(events[i].key, events[i]);
+  }
+  return m;
+}
+
+// ============================================================================
+// Rendering — type-specific cards
+// ============================================================================
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[c]);
+}
+
+function renderCardBody(ev) {
+  const v = ev.value;
+  switch (ev.type) {
+    case "table":   return renderTable(v);
+    case "metric":  return renderMetric(v);
+    case "text":    return renderText(v);
+    case "list":    return renderList(v);
+    case "image":   return renderImage(v);
+    default:        return renderJson(v);
+  }
+}
+
+function renderTable(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return `<div class="text-slate-400 text-xs italic">empty table</div>`;
+  }
+  const headers = Object.keys(rows[0]);
+  const cells = rows.slice(0, 25).map(r =>
+    `<tr class="border-t border-slate-100">${headers.map(h => `<td class="px-2 py-1 align-top">${escapeHtml(typeof r[h] === "object" ? JSON.stringify(r[h]) : r[h])}</td>`).join("")}</tr>`
+  ).join("");
+  const more = rows.length > 25 ? `<tr><td colspan="${headers.length}" class="px-2 py-1 text-slate-400 italic text-xs">… ${rows.length - 25} more rows</td></tr>` : "";
+  return `<div class="overflow-x-auto"><table class="w-full text-xs">
+    <thead><tr class="text-left text-slate-500">${headers.map(h => `<th class="px-2 py-1 font-medium">${escapeHtml(h)}</th>`).join("")}</tr></thead>
+    <tbody>${cells}${more}</tbody>
+  </table></div>`;
+}
+
+function renderMetric(v) {
+  return `<div class="text-3xl font-bold text-indigo-700">${escapeHtml(v)}</div>`;
+}
+
+function renderText(v) {
+  return `<div class="text-sm text-slate-700 whitespace-pre-wrap">${escapeHtml(v)}</div>`;
+}
+
+function renderList(v) {
+  if (!Array.isArray(v)) return renderJson(v);
+  if (v.length === 0) return `<div class="text-slate-400 text-xs italic">empty list</div>`;
+  return `<ul class="text-sm space-y-0.5 list-disc list-inside">${v.slice(0, 30).map(x => `<li>${escapeHtml(typeof x === "object" ? JSON.stringify(x) : x)}</li>`).join("")}</ul>${v.length > 30 ? `<div class="text-xs text-slate-400 italic mt-1">… ${v.length - 30} more</div>` : ""}`;
+}
+
+function renderImage(v) {
+  const url = v?.url ?? "";
+  return `<img src="${escapeHtml(url)}" class="max-w-full rounded border border-slate-200" alt="" />`;
+}
+
+function renderJson(v) {
+  const s = (() => { try { return JSON.stringify(v, null, 2); } catch { return String(v); } })();
+  return `<pre class="text-xs mono bg-slate-50 p-2 rounded overflow-x-auto whitespace-pre-wrap">${escapeHtml(s)}</pre>`;
+}
+
+function typeBadge(type) {
+  const colors = {
+    table:  "bg-emerald-100 text-emerald-700",
+    metric: "bg-indigo-100 text-indigo-700",
+    text:   "bg-slate-100 text-slate-700",
+    list:   "bg-amber-100 text-amber-700",
+    image:  "bg-rose-100 text-rose-700",
+    json:   "bg-slate-100 text-slate-700",
+  };
+  const c = colors[type] ?? "bg-slate-100 text-slate-600";
+  return `<span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded ${c}">${escapeHtml(type)}</span>`;
+}
+
+function renderSceneGrid(snap, justChangedKey) {
+  const grid = document.getElementById("scene-grid");
+  if (snap.size === 0) {
+    grid.innerHTML = `<div class="col-span-full text-center text-slate-400 italic py-8">no scene state yet — drag the slider</div>`;
+    return;
+  }
+  const items = [...snap.entries()].sort();
+  grid.innerHTML = items.map(([key, ev]) => `
+    <div class="bg-white rounded-lg border border-slate-200 p-3 ${key === justChangedKey ? "key-changed" : ""}">
+      <div class="flex items-center justify-between mb-2 gap-2">
+        <div class="font-mono text-sm font-semibold truncate">${escapeHtml(key)}</div>
+        ${typeBadge(ev.type)}
+      </div>
+      ${ev.description ? `<div class="text-xs text-slate-500 italic mb-2">${escapeHtml(ev.description)}</div>` : ""}
+      ${renderCardBody(ev)}
+    </div>
+  `).join("");
+}
+
+function renderStepMarkers(events) {
+  const wrap = document.getElementById("step-markers");
+  wrap.innerHTML = events.map((_, i) =>
+    `<div class="step-marker flex-1 h-1 rounded bg-slate-200" data-i="${i}"></div>`
+  ).join("");
+}
+
+function highlightStepMarker(idx) {
+  const markers = document.querySelectorAll("#step-markers .step-marker");
+  markers.forEach((m, i) => {
+    m.style.backgroundColor = i <= idx ? "#6366f1" : "#e2e8f0";
+  });
+}
+
+// ============================================================================
+// State + wiring
+// ============================================================================
+
+let allEvents = [];
+
+function loadEvents(events) {
+  if (events.length === 0) {
+    alert("No scene.set events found in this trace. Make sure spans contain events with name 'scene.set'.");
+    return;
+  }
+  allEvents = events;
+  const first = events[0];
+  document.getElementById("loader").classList.add("hidden");
+  document.getElementById("viewer").classList.remove("hidden");
+  document.getElementById("trace-name").textContent = first.traceName;
+  document.getElementById("trace-id").textContent = first.traceId;
+  document.getElementById("event-count").textContent = events.length;
+  document.getElementById("step-total").textContent = events.length - 1;
+  const slider = document.getElementById("scrubber");
+  slider.max = events.length - 1;
+  slider.value = events.length - 1;
+  renderStepMarkers(events);
+  scrubTo(events.length - 1);
+}
+
+function scrubTo(idx) {
+  if (allEvents.length === 0) return;
+  const ev = allEvents[idx];
+  const snap = buildSnapshotAt(allEvents, idx);
+  document.getElementById("step-current").textContent = idx;
+  document.getElementById("step-key").textContent = ev?.key ?? "—";
+  document.getElementById("step-hash").textContent = ev?.commitHash ?? "—";
+  highlightStepMarker(idx);
+  renderSceneGrid(snap, ev?.key);
+}
+
+function reset() {
+  allEvents = [];
+  document.getElementById("loader").classList.remove("hidden");
+  document.getElementById("viewer").classList.add("hidden");
+  document.getElementById("paste-area").value = "";
+  document.getElementById("example-picker").value = "";
+}
+
+document.getElementById("scrubber").addEventListener("input", (e) => {
+  scrubTo(parseInt(e.target.value, 10));
+});
+
+document.getElementById("reset-btn").addEventListener("click", reset);
+
+document.getElementById("example-picker").addEventListener("change", async (e) => {
+  if (!e.target.value) return;
+  try {
+    const r = await fetch(e.target.value);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const text = await r.text();
+    const events = extractSceneEvents(parseJsonl(text));
+    loadEvents(events);
+  } catch (err) {
+    alert("Could not load example: " + err.message + "\n\nIf you opened this file directly in the browser (file://), the example fetch is blocked. Run a local server: python3 -m http.server in this folder.");
+  }
+});
+
+document.getElementById("file-input").addEventListener("change", (e) => {
+  const f = e.target.files?.[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => loadEvents(extractSceneEvents(parseJsonl(String(r.result))));
+  r.readAsText(f);
+});
+
+document.getElementById("load-pasted").addEventListener("click", () => {
+  const text = document.getElementById("paste-area").value;
+  if (!text.trim()) return;
+  loadEvents(extractSceneEvents(parseJsonl(text)));
+});
+
+// Drag and drop anywhere
+window.addEventListener("dragover", e => { e.preventDefault(); });
+window.addEventListener("drop", e => {
+  e.preventDefault();
+  const f = e.dataTransfer?.files?.[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => loadEvents(extractSceneEvents(parseJsonl(String(r.result))));
+  r.readAsText(f);
+});
+</script>
+
+</body>
+</html>
