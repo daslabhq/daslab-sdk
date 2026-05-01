@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "ConfluenceActionRecord": {
+      "additionalProperties": false,
+      "description": "Represents a single recorded action in the Confluence Cloud CLI.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "action_key": {
+          "title": "Action Key",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_key"
+      ],
+      "title": "ConfluenceActionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Holds accumulated state for the Confluence Cloud CLI, including all recorded actions.",
+  "properties": {
+    "actions": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/ConfluenceActionRecord"
+        },
+        "type": "array"
+      },
+      "title": "Actions",
+      "type": "object"
+    }
+  },
+  "title": "ConfluenceState",
+  "type": "object"
+}

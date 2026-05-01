@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "GoogleDriveActionRecord": {
+      "additionalProperties": false,
+      "description": "Represents a single recorded action performed via the Google Drive CLI.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "action_key": {
+          "title": "Action Key",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_key"
+      ],
+      "title": "GoogleDriveActionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Holds the accumulated state of all actions, folders, and files in Google Drive.",
+  "properties": {
+    "actions": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/GoogleDriveActionRecord"
+        },
+        "type": "array"
+      },
+      "title": "Actions",
+      "type": "object"
+    },
+    "folders": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Folders",
+      "type": "array"
+    },
+    "files": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Files",
+      "type": "array"
+    }
+  },
+  "title": "GoogleDriveState",
+  "type": "object"
+}

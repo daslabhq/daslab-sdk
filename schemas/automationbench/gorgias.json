@@ -1,0 +1,236 @@
+{
+  "$defs": {
+    "GorgiasCustomer": {
+      "additionalProperties": false,
+      "description": "A customer profile stored within Gorgias.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        }
+      },
+      "title": "GorgiasCustomer",
+      "type": "object"
+    },
+    "GorgiasMessage": {
+      "additionalProperties": false,
+      "description": "An individual message belonging to a Gorgias support ticket.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "body_html": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body Html"
+        },
+        "body_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body Text"
+        },
+        "channel": {
+          "default": "email",
+          "title": "Channel",
+          "type": "string"
+        },
+        "sender_type": {
+          "default": "customer",
+          "enum": [
+            "customer",
+            "agent"
+          ],
+          "title": "Sender Type",
+          "type": "string"
+        },
+        "sender_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sender Email"
+        },
+        "sender_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sender Name"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "title": "GorgiasMessage",
+      "type": "object"
+    },
+    "GorgiasTicket": {
+      "additionalProperties": false,
+      "description": "A Gorgias support request ticket.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subject"
+        },
+        "status": {
+          "default": "open",
+          "enum": [
+            "open",
+            "closed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "channel": {
+          "default": "email",
+          "title": "Channel",
+          "type": "string"
+        },
+        "customer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GorgiasCustomer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "customer_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Customer Email"
+        },
+        "messages": {
+          "items": {
+            "$ref": "#/$defs/GorgiasMessage"
+          },
+          "title": "Messages",
+          "type": "array"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "assignee_user_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assignee User Id"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "title": "GorgiasTicket",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level Gorgias workspace state holding tickets and customers.",
+  "properties": {
+    "tickets": {
+      "items": {
+        "$ref": "#/$defs/GorgiasTicket"
+      },
+      "title": "Tickets",
+      "type": "array"
+    },
+    "customers": {
+      "items": {
+        "$ref": "#/$defs/GorgiasCustomer"
+      },
+      "title": "Customers",
+      "type": "array"
+    }
+  },
+  "title": "GorgiasState",
+  "type": "object"
+}

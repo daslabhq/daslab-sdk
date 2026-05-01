@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "BambooHRActionRecord": {
+      "additionalProperties": false,
+      "description": "Represents a single recorded action performed via the BambooHR CLI.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "action_key": {
+          "title": "Action Key",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_key"
+      ],
+      "title": "BambooHRActionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Holds the accumulated state of all actions performed against BambooHR.",
+  "properties": {
+    "actions": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/BambooHRActionRecord"
+        },
+        "type": "array"
+      },
+      "title": "Actions",
+      "type": "object"
+    }
+  },
+  "title": "BambooHRState",
+  "type": "object"
+}

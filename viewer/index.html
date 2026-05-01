@@ -42,11 +42,18 @@
       <div class="flex gap-3 flex-wrap">
         <select id="example-picker" class="border border-slate-300 rounded px-3 py-2 text-sm bg-white">
           <option value="">Pick an example…</option>
-          <option value="example-traces/sales-routing.jsonl">Sales · multi-hop deal routing</option>
-          <option value="example-traces/support-sla.jsonl">Support · SLA breach sweep</option>
-          <option value="example-traces/marketing-campaign.jsonl">Marketing · campaign performance</option>
-          <option value="example-traces/hr-onboarding.jsonl">HR · new-hire onboarding</option>
-          <option value="example-traces/gmail-triage.jsonl">Simple · gmail triage</option>
+          <optgroup label="Synthetic agent runs">
+            <option value="example-traces/sales-routing.jsonl">Sales · multi-hop deal routing</option>
+            <option value="example-traces/support-sla.jsonl">Support · SLA breach sweep</option>
+            <option value="example-traces/marketing-campaign.jsonl">Marketing · campaign performance</option>
+            <option value="example-traces/hr-onboarding.jsonl">HR · new-hire onboarding</option>
+            <option value="example-traces/gmail-triage.jsonl">Simple · gmail triage</option>
+          </optgroup>
+          <optgroup label="AutomationBench (Zapier) tasks">
+            <option value="example-traces/automationbench-jordan-lee-phone.jsonl">simple · contact phone update (Jordan Lee)</option>
+            <option value="example-traces/automationbench-visitor-nda.jsonl">operations · visitor NDA followup</option>
+            <option value="example-traces/automationbench-speaker-outreach.jsonl">marketing · LinkedIn speaker outreach</option>
+          </optgroup>
         </select>
         <label class="border border-slate-300 rounded px-3 py-2 text-sm bg-white cursor-pointer hover:bg-slate-50">
           Upload .jsonl

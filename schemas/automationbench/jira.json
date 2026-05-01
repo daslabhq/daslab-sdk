@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "JiraActionRecord": {
+      "additionalProperties": false,
+      "description": "A logged action entry for the Jira Software Cloud CLI.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "action_key": {
+          "title": "Action Key",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_key"
+      ],
+      "title": "JiraActionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level state container for the Jira Software Cloud CLI.",
+  "properties": {
+    "actions": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/JiraActionRecord"
+        },
+        "type": "array"
+      },
+      "title": "Actions",
+      "type": "object"
+    },
+    "issues": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "projects": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Projects",
+      "type": "array"
+    }
+  },
+  "title": "JiraState",
+  "type": "object"
+}

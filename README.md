@@ -180,20 +180,42 @@ This is the eval primitive for: comparing two prompts on the same input,
 detecting agent-belief drift mid-run, surfacing exactly what a single tool
 call mutated.
 
+## AutomationBench × daslab-sdk
+
+[Zapier's AutomationBench](https://github.com/zapier/AutomationBench) ships
+49 typed Pydantic models covering Gmail, Salesforce, Slack, Google Sheets,
+HubSpot, Airtable, Notion, Jira, … the whole SaaS landscape. We've exported
+all of them to JSON Schema and checked them in:
+
+```ts
+import gmailSchema from "daslab-sdk/schemas/automationbench/gmail.json"
+  with { type: "json" };
+import { scene } from "daslab-sdk";
+
+scene.set("inbox", emails, { schema: gmailSchema });   // typed scene
+```
+
+See [`schemas/automationbench/`](./schemas/automationbench) for the full
+catalogue + a manifest. Three task fixtures (`automationbench-*.jsonl`)
+live under `viewer/example-traces/` to demo turn-by-turn replay of
+AutomationBench tasks — the visual layer their roadmap calls out as a
+future enhancement.
+
 ## Roadmap
 
-v0.0.2 (current)
+v0.0.3 (current)
 
 - ✅ `scene.set / commit / pending`
 - ✅ Auto widget-type inference
 - ✅ Deterministic content hashing
 - ✅ Graceful no-op without OTel
 - ✅ `sceneDiff` + `buildSnapshot` — attribute-level diff between snapshots
-- ✅ Static HTML scrubber under [`viewer/`](./viewer) with 5 AutomationBench-shaped fixtures
+- ✅ Static HTML scrubber under [`viewer/`](./viewer)
+- ✅ AutomationBench integration — 49 JSON Schemas + 806 task definitions + 3 hand-scripted fixtures
 
 Coming next
 
-- AutomationBench integration — turn-by-turn replay of [Zapier's AutomationBench](https://github.com/zapier/AutomationBench) tasks against real models
+- Real-model AutomationBench runs — wrap their tool dispatch to emit `scene.set` per call, run a sweep of tasks, ship the JSONL
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
 - Hosted scrubber on GitHub Pages
 

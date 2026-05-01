@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "AirtableActionRecord": {
+      "additionalProperties": false,
+      "description": "Represents a single recorded action in the Airtable CLI.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "action_key": {
+          "title": "Action Key",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_key"
+      ],
+      "title": "AirtableActionRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Holds accumulated state for the Airtable CLI, including recorded actions and base data.",
+  "properties": {
+    "actions": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/AirtableActionRecord"
+        },
+        "type": "array"
+      },
+      "title": "Actions",
+      "type": "object"
+    },
+    "bases": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Bases",
+      "type": "array"
+    }
+  },
+  "title": "AirtableState",
+  "type": "object"
+}

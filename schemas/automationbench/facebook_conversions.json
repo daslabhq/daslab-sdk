@@ -1,0 +1,193 @@
+{
+  "$defs": {
+    "FacebookConversionEvent": {
+      "additionalProperties": false,
+      "description": "A conversion event submitted through the Facebook Conversions API.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "event_name": {
+          "title": "Event Name",
+          "type": "string"
+        },
+        "action_source": {
+          "default": "Website",
+          "enum": [
+            "Website",
+            "Physical Store",
+            "App",
+            "Chat",
+            "Email",
+            "Phone Call",
+            "System Generated",
+            "Other"
+          ],
+          "title": "Action Source",
+          "type": "string"
+        },
+        "pixel_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pixel Id"
+        },
+        "dataset_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dataset Id"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Name"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "currency": {
+          "default": "USD",
+          "title": "Currency",
+          "type": "string"
+        },
+        "status": {
+          "default": "success",
+          "enum": [
+            "success",
+            "failed",
+            "pending"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "event_time": {
+          "format": "date-time",
+          "title": "Event Time",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "lifecycle_stage_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lifecycle Stage Name"
+        },
+        "lead_event_source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lead Event Source"
+        },
+        "fbtrace_id": {
+          "title": "Fbtrace Id",
+          "type": "string"
+        },
+        "events_received": {
+          "default": 1,
+          "title": "Events Received",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "event_name"
+      ],
+      "title": "FacebookConversionEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Overall Facebook Conversions state holding all tracked conversion events.",
+  "properties": {
+    "events": {
+      "items": {
+        "$ref": "#/$defs/FacebookConversionEvent"
+      },
+      "title": "Events",
+      "type": "array"
+    }
+  },
+  "title": "FacebookConversionsState",
+  "type": "object"
+}

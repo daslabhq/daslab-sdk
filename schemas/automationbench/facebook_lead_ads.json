@@ -1,0 +1,259 @@
+{
+  "$defs": {
+    "FacebookAdReport": {
+      "additionalProperties": false,
+      "description": "A summary statistics report for one or more Facebook ads.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "date_preset": {
+          "title": "Date Preset",
+          "type": "string"
+        },
+        "date_start": {
+          "title": "Date Start",
+          "type": "string"
+        },
+        "date_stop": {
+          "title": "Date Stop",
+          "type": "string"
+        },
+        "level": {
+          "default": "account",
+          "enum": [
+            "ad",
+            "adset",
+            "campaign",
+            "account"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "total_impressions": {
+          "default": 0,
+          "title": "Total Impressions",
+          "type": "integer"
+        },
+        "total_clicks": {
+          "default": 0,
+          "title": "Total Clicks",
+          "type": "integer"
+        },
+        "total_reach": {
+          "default": 0,
+          "title": "Total Reach",
+          "type": "integer"
+        },
+        "total_spend": {
+          "default": "0.00",
+          "title": "Total Spend",
+          "type": "string"
+        },
+        "average_cpc": {
+          "default": "0.00",
+          "title": "Average Cpc",
+          "type": "string"
+        },
+        "breakdowns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Breakdowns",
+          "type": "array"
+        },
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "date_preset",
+        "date_start",
+        "date_stop"
+      ],
+      "title": "FacebookAdReport",
+      "type": "object"
+    },
+    "FacebookLead": {
+      "additionalProperties": false,
+      "description": "A prospective customer captured via a Facebook Lead Ad form.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "ad_id": {
+          "title": "Ad Id",
+          "type": "string"
+        },
+        "email": {
+          "title": "Email",
+          "type": "string"
+        },
+        "full_name": {
+          "title": "Full Name",
+          "type": "string"
+        },
+        "phone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phone"
+        },
+        "created_time": {
+          "format": "date-time",
+          "title": "Created Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ad_id",
+        "email",
+        "full_name"
+      ],
+      "title": "FacebookLead",
+      "type": "object"
+    },
+    "FacebookLeadAd": {
+      "additionalProperties": false,
+      "description": "A Facebook Lead Ad definition.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "ad_name": {
+          "title": "Ad Name",
+          "type": "string"
+        },
+        "adset_id": {
+          "title": "Adset Id",
+          "type": "string"
+        },
+        "adset_name": {
+          "default": "Lead Generation Adset",
+          "title": "Adset Name",
+          "type": "string"
+        },
+        "campaign_id": {
+          "title": "Campaign Id",
+          "type": "string"
+        },
+        "campaign_name": {
+          "default": "Lead Campaign",
+          "title": "Campaign Name",
+          "type": "string"
+        },
+        "creative_name": {
+          "title": "Creative Name",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "link": {
+          "title": "Link",
+          "type": "string"
+        },
+        "form_id": {
+          "title": "Form Id",
+          "type": "string"
+        },
+        "form_name": {
+          "default": "Contact Form",
+          "title": "Form Name",
+          "type": "string"
+        },
+        "page_id": {
+          "title": "Page Id",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "PAUSED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "action_type": {
+          "default": "LEARN_MORE",
+          "enum": [
+            "APPLY_NOW",
+            "DOWNLOAD",
+            "GET_QUOTE",
+            "LEARN_MORE",
+            "SIGN_UP",
+            "SUBSCRIBE"
+          ],
+          "title": "Action Type",
+          "type": "string"
+        },
+        "platform": {
+          "default": "fb",
+          "title": "Platform",
+          "type": "string"
+        },
+        "created_time": {
+          "format": "date-time",
+          "title": "Created Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ad_name",
+        "adset_id",
+        "creative_name",
+        "message",
+        "link"
+      ],
+      "title": "FacebookLeadAd",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Overall Facebook Lead Ads state holding ads, captured leads, and generated reports.",
+  "properties": {
+    "ads": {
+      "items": {
+        "$ref": "#/$defs/FacebookLeadAd"
+      },
+      "title": "Ads",
+      "type": "array"
+    },
+    "leads": {
+      "items": {
+        "$ref": "#/$defs/FacebookLead"
+      },
+      "title": "Leads",
+      "type": "array"
+    },
+    "reports": {
+      "items": {
+        "$ref": "#/$defs/FacebookAdReport"
+      },
+      "title": "Reports",
+      "type": "array"
+    }
+  },
+  "title": "FacebookLeadAdsState",
+  "type": "object"
+}

