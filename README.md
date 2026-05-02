@@ -6,9 +6,11 @@
 
 ![scrubber demo](./docs/readme-demo.gif)
 
-*Above: claude-haiku-4-5 attempting an [AutomationBench](https://github.com/zapier/AutomationBench) operations task (`operations.airtable_gmail_visitor_followup`). The amber boxes show the model's **intent** before each tool call; the white cards below show the **actual** world state after. This run scored reward 0.00 — the scrubber lets you step through and see exactly where belief diverged from outcome.*
+*Above: an agent run rendered in the static scrubber. Amber boxes show the model's **intent** before each tool call; white cards below show the **actual** world state after. Stepping through reveals exactly where belief diverged from outcome.*
 
 **Try it live →** <https://daslabhq.github.io/scene-otel/>
+
+> **Where things live.** `scene-otel` is the **wire format** — `scene.set` events, hashing, diff, and a generic scrubber. Typed canonical asset shapes (Email, Message, Calendar, …) and the multi-format renderer live in [`scene-state`](https://github.com/daslabhq/scene-state). Adapters for specific benchmarks (AutomationBench, τ-bench, LeRobot) and bench-scoped vendor types (Gmail, Salesforce, Slack) live in [`scene-bench`](https://github.com/daslabhq/scene-bench).
 
 ## Install
 
@@ -115,27 +117,7 @@ python3 -m http.server 5173
 # http://localhost:5173
 ```
 
-Eight fixtures are bundled — five synthetic agent runs and three picked from AutomationBench (see below).
-
-## AutomationBench schemas + fixtures
-
-[Zapier's AutomationBench](https://github.com/zapier/AutomationBench) defines typed Pydantic models for 49 SaaS apps (Gmail, Salesforce, Slack, Google Sheets, HubSpot, Airtable, Notion, Jira, Asana, Trello, BambooHR, QuickBooks, …). They're exported as JSON Schema under [`schemas/automationbench/`](./schemas/automationbench) so you can pin scenes to a typed contract without a Python dependency:
-
-```ts
-import gmail from "scene-otel/schemas/automationbench/gmail.json"
-  with { type: "json" };
-
-scene.set("inbox", emails, { schema: gmail });
-```
-
-All 806 of their task definitions are also dumped under `viewer/example-traces/automationbench/tasks/` for browsing. Three hand-scripted fixtures live under `viewer/example-traces/automationbench-*.jsonl` — pick them in the scrubber dropdown.
-
-Re-sync when AutomationBench updates:
-
-```bash
-../../references/AutomationBench/.venv/bin/python scripts/sync-automationbench.py
-bun scripts/build-ab-fixtures.ts
-```
+Five synthetic agent runs are bundled — generic substrate examples (sales, support, marketing, HR, gmail-triage). Looking for AutomationBench traces, schemas, or task dumps? They live in [`scene-bench`](https://github.com/daslabhq/scene-bench) — the harness wraps Sierra's Verifiers env, syncs the 49 typed JSON Schemas + 806 tasks, and ships the JSONL fixtures.
 
 ## Daslab platform
 
@@ -143,18 +125,17 @@ This SDK is the substrate behind [daslab.dev](https://daslab.dev) — a platform
 
 ## Roadmap
 
-v0.0.4 (current)
+v0.0.5 (current)
 
 - ✅ `scene.set / commit / pending`, auto widget-type inference, content hashing, graceful no-op
 - ✅ `scene.intent` — agent's predicted/intended state, rendered side-by-side with the outcome
 - ✅ `sceneDiff` + `buildSnapshot`
-- ✅ Static HTML scrubber + 11 fixtures, hosted on Pages
-- ✅ AutomationBench: 49 JSON Schemas, 806 task defs, 3 hand-scripted fixtures, 3 real-model (claude-haiku-4-5) fixtures via `integrations/automationbench/`
+- ✅ Static HTML scrubber + 5 synthetic fixtures, hosted on Pages
 
 Coming next
 
-- More tasks + bigger models — sweep across domains, build a leaderboard of belief-vs-outcome accuracy
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
+- Tighter integration with [`scene-state`](https://github.com/daslabhq/scene-state) views and [`scene-bench`](https://github.com/daslabhq/scene-bench) bench fixtures
 
 ## License
 
@@ -162,6 +143,8 @@ MIT. See [LICENSE](./LICENSE).
 
 ## Related
 
+- [`scene-state`](https://github.com/daslabhq/scene-state) — typed canonical asset shapes (Email, Message, Calendar, …) + sized views that render to HTML / Markdown / Text. The visual language for everything `scene-otel` emits.
+- [`scene-bench`](https://github.com/daslabhq/scene-bench) — open harness for running, measuring, and visualizing agent benchmarks. Adapters for AutomationBench, τ-bench, LeRobot, …
 - [`agent-otel`](https://github.com/mirkokiefer/agent-otel) — the OTel router for agent telemetry. Fanout to any sink.
 - [`scry`](https://github.com/mirkokiefer/agent-otel#scry--sdk-and-cli-for-agents-to-query-their-own-traces) — SDK + CLI for agents to query their own traces. Bundled with `agent-otel`.
 - [`autocompile`](https://github.com/mirkokiefer/autocompile) — observes repeated agent runs and compiles the invariant parts into code, leaving the LLM only the decisions that need judgment.

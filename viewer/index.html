@@ -49,17 +49,11 @@
             <option value="example-traces/hr-onboarding.jsonl">HR · new-hire onboarding</option>
             <option value="example-traces/gmail-triage.jsonl">Simple · gmail triage</option>
           </optgroup>
-          <optgroup label="AutomationBench · real claude-haiku-4-5 runs">
-            <option value="example-traces/automationbench-real-jordan-lee.jsonl">✓ simple · contact phone update (reward 1.00)</option>
-            <option value="example-traces/automationbench-real-airtable-create.jsonl">✓ simple · airtable create contact (reward 1.00)</option>
-            <option value="example-traces/automationbench-real-visitor-nda.jsonl">✗ operations · visitor NDA followup (reward 0.00 — failed)</option>
-          </optgroup>
-          <optgroup label="AutomationBench · hand-scripted">
-            <option value="example-traces/automationbench-jordan-lee-phone.jsonl">simple · contact phone update (Jordan Lee)</option>
-            <option value="example-traces/automationbench-visitor-nda.jsonl">operations · visitor NDA followup</option>
-            <option value="example-traces/automationbench-speaker-outreach.jsonl">marketing · LinkedIn speaker outreach</option>
-          </optgroup>
         </select>
+        <span class="text-xs text-slate-500 self-center">
+          Looking for AutomationBench traces? They live in
+          <a href="https://github.com/daslabhq/scene-bench" class="underline hover:text-slate-900">scene-bench</a>.
+        </span>
         <label class="border border-slate-300 rounded px-3 py-2 text-sm bg-white cursor-pointer hover:bg-slate-50">
           Upload .jsonl
           <input type="file" accept=".jsonl,.json,.txt" class="hidden" id="file-input" />
