@@ -1,12 +1,8 @@
 # daslab-sdk
 
-> Three lines and your agent's traces tell you what your agent **knew**, not just what it **did**.
+> Snapshot what your agent knew, at every step.
 
-The scene SDK for AI agents. Snapshot your agent's view of the world at any step, get a content-addressed timeline, replay & diff between runs, get a Verifiers / RL-ready labeled environment for free.
-
-Works with any OTel pipeline you already have — Phoenix, Braintrust, LangSmith, Honeycomb, Datadog, Jaeger, anything. Daslab account optional.
-
----
+`scene.set(key, value)` emits an OTel span event with a content-addressed snapshot of the value. Whatever sink you have configured — Phoenix, Braintrust, Honeycomb, Datadog, Jaeger, JSONL, Daslab — sees it.
 
 ## Install
 
@@ -19,66 +15,39 @@ npm install daslab-sdk @opentelemetry/api
 ```ts
 import { scene } from "daslab-sdk";
 
-// Anywhere inside an OTel-traced span
 scene.set("inbox",   emails);          // → table
 scene.set("flagged", flagged.length);  // → metric
 scene.set("draft",   draft);           // → text/json (auto-inferred)
 ```
 
-That's it. Each call emits an OTel span event with the snapshot, a content-addressed `commit_hash`, and an inferred widget type. Whatever sink you have (Phoenix / Braintrust / Honeycomb / OTLP collector / a JSONL file) sees it. No infra change.
+Each call adds an event named `scene.set` to the active OTel span. The widget hint is inferred from the value's shape; override with `{ as }`.
 
-## Why
+## What you can do with the events
 
-Today your agent traces look like:
-
-```
-LLM call → tool call → LLM call → tool call → done
-```
-
-Useful for billing. Useless for debugging.
-
-With `scene.set` they look like:
-
-```
-step 1 → inbox: 47 emails       budget: $12k
-step 2 → flagged: 12 emails     budget: $12k
-step 3 → flagged: 3 urgent      budget: $12k
-step 4 → draft: "Re: invoice…"  budget: $11.4k
-step 5 → sent ✓                 budget: $11.4k
-```
-
-You can scrub through the agent's mind. Diff between runs. Reproduce a failure. Score step-by-step. Train RL on a real labeled trajectory.
-
-## What you get
-
-- 📡 **Richer traces in any OTel tool you already use.** Phoenix / Braintrust / Honeycomb / Datadog / Jaeger / OTLP — they all render the events inline.
-- 🔁 **Deterministic replay.** Every snapshot is content-hashed. Run twice with the same inputs → same hashes → confidence the run is reproducible.
-- 🪞 **Diff between runs.** Same agent, two prompts. Diff the scenes at corresponding steps. The eval primitive every team builds badly themselves.
-- 🐛 **Sharable bug reports.** "Here's the JSONL trace — at t=4.2s the agent thought 47 things were unpaid; only 3 were." Reproducible without sending your infra.
-- 🤖 **A memory your coding agent can read.** Claude Code / Cursor / your in-house agent reads scene events to debug *itself*.
-- 🧪 **Verifiers / RL ready.** Each `scene.set` is a labeled step output. RL training gets a labeled trajectory for free.
+- **Read them in any OTel viewer.** Span events render inline in Phoenix, Braintrust, Honeycomb, Datadog, Jaeger, etc. Trace becomes legible: not just "LLM call → tool call → done" but "after step 3, inbox=47, flagged=3, draft drafted."
+- **Replay deterministically.** Every snapshot is content-hashed. Two runs with the same inputs produce the same hashes — useful for confirming reproducibility.
+- **Diff between runs.** `sceneDiff(before, after)` (see below) returns added / removed / changed / unchanged keys with deep equality.
+- **Share traces.** A JSONL dump is enough to reproduce a failure off-system.
+- **Use them as labeled trajectories.** Each `scene.set` is a content-addressed step output, which is the shape Verifiers / RL training expects.
 
 ## API
 
 ```ts
-import { scene } from "daslab-sdk";
-
-// Snapshot one key
 scene.set("inbox", emails);
 
-// Override the inferred renderer hint
+// Override inferred type
 scene.set("notes", "raw text", { as: "text" });
 
-// Document the key (helps coding agents + UIs)
-scene.set("budget", 12_000, { description: "EUR remaining for this run" });
+// Document the key (helps coding-agent readers + UIs)
+scene.set("budget", 12_000, { description: "EUR remaining" });
 
 // Atomically commit several keys under one hash
 scene.set("a", 1);
 scene.set("b", 2);
-scene.commit();    // a + b grouped under the same commit_hash
+scene.commit();
 ```
 
-### Span event format (the wire contract)
+### Wire format
 
 Each `scene.set` adds an event named `scene.set` to the current OTel span:
 
@@ -86,18 +55,16 @@ Each `scene.set` adds an event named `scene.set` to the current OTel span:
 |---|---|
 | `scene.key` | The user-supplied key |
 | `scene.commit_hash` | sha256 over canonical batch JSON, 16-char hex |
-| `scene.value` | JSON-encoded value (truncated at 32KB) |
-| `scene.value.type` | Inferred widget hint: `table` / `metric` / `text` / `image` / `list` / `json` |
-| `scene.value.size` | JSON byte size (for budget tracking) |
-| `scene.description` | Optional, if provided |
+| `scene.value` | JSON-encoded value (truncated at 32 KB) |
+| `scene.value.type` | Widget hint: `table` / `metric` / `text` / `image` / `list` / `json` |
+| `scene.value.size` | JSON byte size |
+| `scene.description` | Optional |
 
-Anyone can ingest these — the contract is just OTel.
+The contract is plain OTel — no daslab-specific consumer needed.
 
-### Auto widget-type inference
+### Inferred types
 
-Used by default (override with `{ as }`):
-
-| Value shape | Inferred type |
+| Value shape | Type |
 |---|---|
 | `[{...}, {...}]` (array of objects with consistent keys) | `table` |
 | `42` (number) | `metric` |
@@ -106,116 +73,72 @@ Used by default (override with `{ as }`):
 | `{ url: "x.png" }` or `{ mimeType: "image/..." }` | `image` |
 | anything else | `json` |
 
-## Works with anything OTel
-
-`daslab-sdk` only depends on `@opentelemetry/api` (peer). It calls `trace.getActiveSpan()` and adds events. If you don't have OTel set up, it's a graceful no-op. If you do, your sink already sees the events.
-
-Tested against:
-
-- ✅ Phoenix (Arize)
-- ✅ Braintrust
-- ✅ LangSmith (via OTLP)
-- ✅ Honeycomb
-- ✅ Datadog
-- ✅ Jaeger / Tempo (via OTLP)
-- ✅ JSONL files (`@opentelemetry/exporter-trace-otlp-http` + a local file)
-- ✅ Daslab Server (the multi-platform reactive viewer — see below)
-
-## Daslab Server (optional, the upsell)
-
-The SDK alone is already useful — but the Daslab platform compounds it:
-
-| | OSS SDK alone | Daslab Server |
-|---|---|---|
-| Trace events in any OTel tool | ✅ | ✅ |
-| Deterministic replay & diff | ✅ | ✅ |
-| **Persistent searchable run history** | ❌ | ✅ |
-| **Live multi-platform scene viewer** (iOS / desktop / web) | ❌ | ✅ |
-| **Cross-trace queries** ("all runs where step 3 failed") | ❌ | ✅ |
-| **Rich media in scenes** (image / audio / video) | ❌ | ✅ |
-| **Scene actions** (approve / redo / reroute) | ❌ | ✅ |
-| **Sharing, comments, collab per step** | ❌ | ✅ |
-| **Hosted MCP** (Claude Code reads YOUR runs) | ❌ | ✅ |
-| **RL eval & training at scale** | ❌ | ✅ |
-
-When the active OTel span carries a `daslab.platform` attribute, snapshots also commit to Daslab's content-addressed scene tree so the multi-platform viewer picks them up. That's opt-in — calling `scene.set` from anywhere works without it.
-
-Learn more: <https://daslab.dev>
-
-## Try it in the browser
-
-A static scrubber lives in [`viewer/`](./viewer) — a single HTML file (no build step) that visualizes any OTel JSONL with `scene.set` events. Five example traces ship under `viewer/example-traces/`, each mirroring an [AutomationBench](https://github.com/zapier/AutomationBench) domain shape:
-
-- Sales · multi-hop deal routing
-- Support · SLA breach sweep
-- Marketing · campaign performance review
-- HR · new-hire onboarding
-- Simple · gmail triage
-
-```bash
-cd viewer
-python3 -m http.server 5173
-# http://localhost:5173 → pick an example or upload your own JSONL
-```
-
-## Diff between scenes
+## Diff
 
 ```ts
 import { sceneDiff, buildSnapshot } from "daslab-sdk";
 
-// Walk a stream of scene events to the moment you care about
 const before = buildSnapshot(events, "ab12cd34ef567890");  // commit_hash
 const after  = buildSnapshot(events, "ff99ee88aa776655");
-
 const d = sceneDiff(before, after);
-// {
-//   added:    { draft: {...} },
-//   removed:  {},
-//   changed:  [ { key: "flagged", before: 0, after: 2 } ],
-//   unchanged: ["inbox", "budget"]
-// }
+//  {
+//    added:    { draft: {...} },
+//    removed:  {},
+//    changed:  [ { key: "flagged", before: 0, after: 2 } ],
+//    unchanged: ["inbox", "budget"]
+//  }
 ```
 
-This is the eval primitive for: comparing two prompts on the same input,
-detecting agent-belief drift mid-run, surfacing exactly what a single tool
-call mutated.
+Useful for: comparing two prompts on the same input, detecting belief drift mid-run, surfacing what a single tool call mutated.
 
-## AutomationBench × daslab-sdk
+## Static scrubber
 
-[Zapier's AutomationBench](https://github.com/zapier/AutomationBench) ships
-49 typed Pydantic models covering Gmail, Salesforce, Slack, Google Sheets,
-HubSpot, Airtable, Notion, Jira, … the whole SaaS landscape. We've exported
-all of them to JSON Schema and checked them in:
+A single HTML file under [`viewer/`](./viewer) parses JSONL OTel traces and renders the scene timeline as scrubbable cards (table / metric / text / image / json). No build step.
+
+```bash
+cd viewer
+python3 -m http.server 5173
+# http://localhost:5173
+```
+
+Eight fixtures are bundled — five synthetic agent runs and three picked from AutomationBench (see below).
+
+## AutomationBench schemas + fixtures
+
+[Zapier's AutomationBench](https://github.com/zapier/AutomationBench) defines typed Pydantic models for 49 SaaS apps (Gmail, Salesforce, Slack, Google Sheets, HubSpot, Airtable, Notion, Jira, Asana, Trello, BambooHR, QuickBooks, …). They're exported as JSON Schema under [`schemas/automationbench/`](./schemas/automationbench) so you can pin scenes to a typed contract without a Python dependency:
 
 ```ts
-import gmailSchema from "daslab-sdk/schemas/automationbench/gmail.json"
+import gmail from "daslab-sdk/schemas/automationbench/gmail.json"
   with { type: "json" };
-import { scene } from "daslab-sdk";
 
-scene.set("inbox", emails, { schema: gmailSchema });   // typed scene
+scene.set("inbox", emails, { schema: gmail });
 ```
 
-See [`schemas/automationbench/`](./schemas/automationbench) for the full
-catalogue + a manifest. Three task fixtures (`automationbench-*.jsonl`)
-live under `viewer/example-traces/` to demo turn-by-turn replay of
-AutomationBench tasks — the visual layer their roadmap calls out as a
-future enhancement.
+All 806 of their task definitions are also dumped under `viewer/example-traces/automationbench/tasks/` for browsing. Three hand-scripted fixtures live under `viewer/example-traces/automationbench-*.jsonl` — pick them in the scrubber dropdown.
+
+Re-sync when AutomationBench updates:
+
+```bash
+../../references/AutomationBench/.venv/bin/python scripts/sync-automationbench.py
+bun scripts/build-ab-fixtures.ts
+```
+
+## Daslab platform
+
+This SDK is the substrate behind [daslab.dev](https://daslab.dev) — a platform for running, observing, and iterating on agents end-to-end with persistent multi-platform scene viewing (iOS / desktop / web), cross-run queries, and RL training on the resulting trajectories. The SDK works fully standalone; the platform is what we're building on top of it.
 
 ## Roadmap
 
 v0.0.3 (current)
 
-- ✅ `scene.set / commit / pending`
-- ✅ Auto widget-type inference
-- ✅ Deterministic content hashing
-- ✅ Graceful no-op without OTel
-- ✅ `sceneDiff` + `buildSnapshot` — attribute-level diff between snapshots
-- ✅ Static HTML scrubber under [`viewer/`](./viewer)
-- ✅ AutomationBench integration — 49 JSON Schemas + 806 task definitions + 3 hand-scripted fixtures
+- ✅ `scene.set / commit / pending`, auto widget-type inference, content hashing, graceful no-op
+- ✅ `sceneDiff` + `buildSnapshot`
+- ✅ Static HTML scrubber + 8 fixtures
+- ✅ AutomationBench: 49 JSON Schemas, 806 task defs, 3 hand-scripted fixtures
 
 Coming next
 
-- Real-model AutomationBench runs — wrap their tool dispatch to emit `scene.set` per call, run a sweep of tasks, ship the JSONL
+- Real-model AutomationBench runs — instrument their Verifiers env so `scene.set` fires per actual tool call
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
 - Hosted scrubber on GitHub Pages
 
