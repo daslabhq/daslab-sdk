@@ -155,5 +155,6 @@ MIT. See [LICENSE](./LICENSE).
 
 ## Related
 
-- [`agent-otel`](https://www.npmjs.com/package/agent-otel) — the OTel router for agent telemetry. Fanout to any sink.
-- [`scry`](https://www.npmjs.com/package/agent-otel) — CLI to inspect / replay / diff agent traces. Bundled with `agent-otel`.
+- [`agent-otel`](https://github.com/mirkokiefer/agent-otel) — the OTel router for agent telemetry. Fanout to any sink.
+- [`scry`](https://github.com/mirkokiefer/agent-otel#scry--sdk-and-cli-for-agents-to-query-their-own-traces) — SDK + CLI for agents to query their own traces. Bundled with `agent-otel`.
+- [`autocompile`](https://github.com/mirkokiefer/autocompile) — observes repeated agent runs and compiles the invariant parts into code, leaving the LLM only the decisions that need judgment.
