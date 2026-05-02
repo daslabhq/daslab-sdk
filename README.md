@@ -4,6 +4,10 @@
 
 `scene.set(key, value)` emits an OTel span event with a content-addressed snapshot of the value. Whatever sink you have configured — Phoenix, Braintrust, Honeycomb, Datadog, Jaeger, JSONL, Daslab — sees it.
 
+![scrubber demo](./docs/readme-demo.gif)
+
+*Above: the bundled scrubber stepping through one of [AutomationBench](https://github.com/zapier/AutomationBench)'s tasks (`simple.email_sf_contact_phone_update` — find Jordan Lee's email, extract her new phone number, update the Salesforce contact). The agent's view of the world emerges step by step.*
+
 ## Install
 
 ```bash
