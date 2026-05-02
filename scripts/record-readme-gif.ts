@@ -22,7 +22,7 @@ const OUT_DIR = join(ROOT, "docs");
 const OUT_GIF = join(OUT_DIR, "readme-demo.gif");
 const PORT = 5751;
 const BASE = `http://localhost:${PORT}`;
-const FIXTURE = "example-traces/automationbench-jordan-lee-phone.jsonl";
+const FIXTURE = "example-traces/sales-routing.jsonl";
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -41,7 +41,7 @@ console.log(`→ frames → ${frameDir}`);
 try {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({
-    viewport: { width: 1280, height: 820 },
+    viewport: { width: 1100, height: 1100 },   // square hero
     deviceScaleFactor: 2,
   });
   const page = await ctx.newPage();
@@ -63,13 +63,22 @@ try {
   await page.waitForTimeout(500);
 
   // Hold each step for a beat (8fps base; 6 frames per step ≈ 750ms hold).
+  // Scroll-track so the just-changed card stays centered in the square viewport.
   let frame = 0;
   for (let i = 0; i <= max; i++) {
     await page.$eval("#scrubber", (el: any, v: number) => {
       el.value = String(v);
       el.dispatchEvent(new Event("input", { bubbles: true }));
     }, i);
-    await page.waitForTimeout(70);   // let the DOM settle
+    await page.waitForTimeout(80);   // let the DOM settle
+    // Center the highlighted card so the action is always visible.
+    await page.evaluate(() => {
+      const el = document.querySelector("#scene-grid .key-changed");
+      if (el && el instanceof HTMLElement) {
+        el.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "center" });
+      }
+    });
+    await page.waitForTimeout(60);
     for (let h = 0; h < 6; h++) {
       await page.screenshot({
         path: join(frameDir, `f-${String(frame).padStart(4, "0")}.png`),
@@ -79,7 +88,8 @@ try {
       await page.waitForTimeout(120);
     }
   }
-  // Hold final state a beat longer.
+  // Hold final state a beat longer (scroll back to top to show the whole result).
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }));
   for (let h = 0; h < 12; h++) {
     await page.screenshot({
       path: join(frameDir, `f-${String(frame).padStart(4, "0")}.png`),
@@ -98,7 +108,7 @@ try {
     "-y",
     "-framerate", "12",
     "-i",         join(frameDir, "f-%04d.png"),
-    "-vf",        "scale=900:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5",
+    "-vf",        "scale=900:900:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5",
     "-loop",      "0",
     OUT_GIF,
   ], { stdio: "inherit" });
