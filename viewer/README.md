@@ -1,4 +1,4 @@
-# daslab-sdk · scene scrubber
+# scene-otel · scene scrubber
 
 A static HTML page that visualizes scene timelines from any OTel JSONL trace
 containing `scene.set` events. Zero install, zero build step.
@@ -57,6 +57,6 @@ Required attributes per `scene.set` event:
 }
 ```
 
-This is what the [`daslab-sdk`](https://github.com/daslabhq/daslab-sdk)
+This is what the [`scene-otel`](https://github.com/daslabhq/scene-otel)
 emits automatically when you call `scene.set(key, value)` from inside an
 OTel-traced span.

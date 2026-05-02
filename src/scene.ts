@@ -1,7 +1,7 @@
 /**
  * Tier-1 scene API — additive, ~5 lines per agent.
  *
- *   import { scene } from 'daslab-sdk';
+ *   import { scene } from 'scene-otel';
  *
  *   scene.set('inbox',  emails);   // → OTel span event with the snapshot
  *   scene.set('budget', budget);

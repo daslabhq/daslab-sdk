@@ -31,7 +31,7 @@ context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
 const exporter = new InMemorySpanExporter();
 const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(exporter)] });
 trace.setGlobalTracerProvider(provider);
-const tracer = trace.getTracer("daslab-sdk-automationbench");
+const tracer = trace.getTracer("scene-otel-automationbench");
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const TASKS = join(ROOT, "viewer/example-traces/automationbench/tasks");

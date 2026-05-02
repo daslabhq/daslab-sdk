@@ -3,7 +3,7 @@ One-time exporter: AutomationBench Pydantic schemas → JSON Schema files,
 plus all task definitions → JSON files.
 
 Run this whenever AutomationBench updates their schemas/tasks. The output
-is checked into daslab-sdk so users get the typed app schemas without any
+is checked into scene-otel so users get the typed app schemas without any
 Python dependency at runtime.
 
 Requires the AutomationBench repo cloned at ../../references/AutomationBench

@@ -1,4 +1,4 @@
-# daslab-sdk
+# scene-otel
 
 > Snapshot what your agent knew, at every step.
 
@@ -8,18 +8,18 @@
 
 *Above: the bundled scrubber stepping through one of [AutomationBench](https://github.com/zapier/AutomationBench)'s tasks (`simple.email_sf_contact_phone_update` — find Jordan Lee's email, extract her new phone number, update the Salesforce contact). The agent's view of the world emerges step by step.*
 
-**Try it live →** <https://daslabhq.github.io/daslab-sdk/>
+**Try it live →** <https://daslabhq.github.io/scene-otel/>
 
 ## Install
 
 ```bash
-npm install daslab-sdk @opentelemetry/api
+npm install scene-otel @opentelemetry/api
 ```
 
 ## Use
 
 ```ts
-import { scene } from "daslab-sdk";
+import { scene } from "scene-otel";
 
 scene.set("inbox",   emails);          // → table
 scene.set("flagged", flagged.length);  // → metric
@@ -82,7 +82,7 @@ The contract is plain OTel — no daslab-specific consumer needed.
 ## Diff
 
 ```ts
-import { sceneDiff, buildSnapshot } from "daslab-sdk";
+import { sceneDiff, buildSnapshot } from "scene-otel";
 
 const before = buildSnapshot(events, "ab12cd34ef567890");  // commit_hash
 const after  = buildSnapshot(events, "ff99ee88aa776655");
@@ -101,7 +101,7 @@ Useful for: comparing two prompts on the same input, detecting belief drift mid-
 
 A single HTML file under [`viewer/`](./viewer) parses JSONL OTel traces and renders the scene timeline as scrubbable cards (table / metric / text / image / json). No build step.
 
-Live: <https://daslabhq.github.io/daslab-sdk/> · or run locally:
+Live: <https://daslabhq.github.io/scene-otel/> · or run locally:
 
 ```bash
 cd viewer
@@ -116,7 +116,7 @@ Eight fixtures are bundled — five synthetic agent runs and three picked from A
 [Zapier's AutomationBench](https://github.com/zapier/AutomationBench) defines typed Pydantic models for 49 SaaS apps (Gmail, Salesforce, Slack, Google Sheets, HubSpot, Airtable, Notion, Jira, Asana, Trello, BambooHR, QuickBooks, …). They're exported as JSON Schema under [`schemas/automationbench/`](./schemas/automationbench) so you can pin scenes to a typed contract without a Python dependency:
 
 ```ts
-import gmail from "daslab-sdk/schemas/automationbench/gmail.json"
+import gmail from "scene-otel/schemas/automationbench/gmail.json"
   with { type: "json" };
 
 scene.set("inbox", emails, { schema: gmail });

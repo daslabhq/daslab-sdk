@@ -33,7 +33,7 @@ const provider = new BasicTracerProvider({
   spanProcessors: [new SimpleSpanProcessor(exporter)],
 });
 trace.setGlobalTracerProvider(provider);
-const tracer = trace.getTracer("daslab-sdk-fixtures");
+const tracer = trace.getTracer("scene-otel-fixtures");
 
 // ---------------------------------------------------------------------------
 // helpers
