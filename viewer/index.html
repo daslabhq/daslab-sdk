@@ -49,7 +49,12 @@
             <option value="example-traces/hr-onboarding.jsonl">HR · new-hire onboarding</option>
             <option value="example-traces/gmail-triage.jsonl">Simple · gmail triage</option>
           </optgroup>
-          <optgroup label="AutomationBench (Zapier) tasks">
+          <optgroup label="AutomationBench · real claude-haiku-4-5 runs">
+            <option value="example-traces/automationbench-real-jordan-lee.jsonl">✓ simple · contact phone update (reward 1.00)</option>
+            <option value="example-traces/automationbench-real-airtable-create.jsonl">✓ simple · airtable create contact (reward 1.00)</option>
+            <option value="example-traces/automationbench-real-visitor-nda.jsonl">✗ operations · visitor NDA followup (reward 0.00 — failed)</option>
+          </optgroup>
+          <optgroup label="AutomationBench · hand-scripted">
             <option value="example-traces/automationbench-jordan-lee-phone.jsonl">simple · contact phone update (Jordan Lee)</option>
             <option value="example-traces/automationbench-visitor-nda.jsonl">operations · visitor NDA followup</option>
             <option value="example-traces/automationbench-speaker-outreach.jsonl">marketing · LinkedIn speaker outreach</option>
@@ -147,12 +152,13 @@ function extractSceneEvents(spans) {
       out.push({
         traceName,
         traceId,
-        timestamp:  ev.time_ns ?? 0,
-        key:        a["scene.key"],
-        value:      parsed,
-        type:       a["scene.value.type"],
-        size:       a["scene.value.size"],
-        commitHash: a["scene.commit_hash"],
+        timestamp:   ev.time_ns ?? 0,
+        key:         a["scene.key"],
+        value:       parsed,
+        type:        a["scene.value.type"],
+        size:        a["scene.value.size"],
+        commitHash:  a["scene.commit_hash"],
+        kind:        a["scene.kind"] ?? "actual",   // older fixtures default to actual
         description: a["scene.description"],
       });
     }
@@ -160,11 +166,23 @@ function extractSceneEvents(spans) {
   return out.sort((a, b) => a.timestamp - b.timestamp);
 }
 
+/**
+ * At scrub position idx, return Map<key, { actual, intent }>:
+ *   actual — most recent kind="actual" event for this key at or before idx
+ *   intent — any pending kind="intent" since the previous actual (still in flight)
+ */
 function buildSnapshotAt(events, idx) {
-  // include events 0..idx
   const m = new Map();
   for (let i = 0; i <= idx && i < events.length; i++) {
-    m.set(events[i].key, events[i]);
+    const ev = events[i];
+    const slot = m.get(ev.key) ?? { actual: undefined, intent: undefined };
+    if (ev.kind === "intent") {
+      slot.intent = ev;            // pending until an actual lands
+    } else {
+      slot.actual = ev;
+      slot.intent = undefined;     // intent resolved
+    }
+    m.set(ev.key, slot);
   }
   return m;
 }
@@ -249,17 +267,47 @@ function renderSceneGrid(snap, justChangedKey) {
     grid.innerHTML = `<div class="col-span-full text-center text-slate-400 italic py-8">no scene state yet — drag the slider</div>`;
     return;
   }
-  const items = [...snap.entries()].sort();
-  grid.innerHTML = items.map(([key, ev]) => `
-    <div class="bg-white rounded-lg border border-slate-200 p-3 ${key === justChangedKey ? "key-changed" : ""}">
+  const items = [...snap.entries()]
+    .filter(([_, slot]) => slot.actual || slot.intent)
+    .sort();
+  grid.innerHTML = items.map(([key, slot]) => {
+    const intent = slot.intent;
+    const actual = slot.actual;
+    // Highlight the card if it just changed (either actual or intent for this step)
+    const ringClass = key === justChangedKey ? "key-changed" : "";
+    // Pending-intent state: amber border to flag "model wants this, hasn't run yet"
+    const pendingIntent = intent && !actual;
+    const intentBorder = pendingIntent ? "border-amber-400" : "border-slate-200";
+    const intentBlock = intent ? `
+      <div class="mb-3 -mx-3 -mt-3 px-3 pt-2 pb-2 bg-amber-50 border-b border-amber-200 rounded-t-lg">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-700">intent · agent wants to do this</div>
+          ${typeBadge(intent.type)}
+        </div>
+        ${intent.description ? `<div class="text-xs text-amber-800 italic mb-1">${escapeHtml(intent.description)}</div>` : ""}
+        ${renderCardBody(intent)}
+      </div>
+    ` : "";
+    const actualBlock = actual ? `
       <div class="flex items-center justify-between mb-2 gap-2">
         <div class="font-mono text-sm font-semibold truncate">${escapeHtml(key)}</div>
-        ${typeBadge(ev.type)}
+        ${typeBadge(actual.type)}
       </div>
-      ${ev.description ? `<div class="text-xs text-slate-500 italic mb-2">${escapeHtml(ev.description)}</div>` : ""}
-      ${renderCardBody(ev)}
-    </div>
-  `).join("");
+      ${actual.description ? `<div class="text-xs text-slate-500 italic mb-2">${escapeHtml(actual.description)}</div>` : ""}
+      ${renderCardBody(actual)}
+    ` : `
+      <div class="flex items-center justify-between mb-2 gap-2">
+        <div class="font-mono text-sm font-semibold truncate text-slate-400">${escapeHtml(key)}</div>
+      </div>
+      <div class="text-xs italic text-slate-400">awaiting outcome…</div>
+    `;
+    return `
+      <div class="bg-white rounded-lg border ${intentBorder} p-3 ${ringClass}">
+        ${intentBlock}
+        ${actualBlock}
+      </div>
+    `;
+  }).join("");
 }
 
 function renderStepMarkers(events) {

@@ -22,7 +22,7 @@ const OUT_DIR = join(ROOT, "docs");
 const OUT_GIF = join(OUT_DIR, "readme-demo.gif");
 const PORT = 5751;
 const BASE = `http://localhost:${PORT}`;
-const FIXTURE = "example-traces/sales-routing.jsonl";
+const FIXTURE = "example-traces/automationbench-real-visitor-nda.jsonl";
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -108,7 +108,7 @@ try {
     "-y",
     "-framerate", "12",
     "-i",         join(frameDir, "f-%04d.png"),
-    "-vf",        "scale=900:900:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5",
+    "-vf",        "fps=10,scale=820:820:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5",
     "-loop",      "0",
     OUT_GIF,
   ], { stdio: "inherit" });

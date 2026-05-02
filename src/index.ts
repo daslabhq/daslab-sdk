@@ -15,9 +15,11 @@
 export {
   scene,
   set,
+  intent,
   commit,
   inferType,
   type InferredType,
+  type SceneKind,
   type SceneSetOptions,
 } from "./scene.js";
 

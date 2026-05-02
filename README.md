@@ -6,7 +6,7 @@
 
 ![scrubber demo](./docs/readme-demo.gif)
 
-*Above: the bundled scrubber stepping through one of [AutomationBench](https://github.com/zapier/AutomationBench)'s tasks (`simple.email_sf_contact_phone_update` — find Jordan Lee's email, extract her new phone number, update the Salesforce contact). The agent's view of the world emerges step by step.*
+*Above: claude-haiku-4-5 attempting an [AutomationBench](https://github.com/zapier/AutomationBench) operations task (`operations.airtable_gmail_visitor_followup`). The amber boxes show the model's **intent** before each tool call; the white cards below show the **actual** world state after. This run scored reward 0.00 — the scrubber lets you step through and see exactly where belief diverged from outcome.*
 
 **Try it live →** <https://daslabhq.github.io/scene-otel/>
 
@@ -24,6 +24,12 @@ import { scene } from "scene-otel";
 scene.set("inbox",   emails);          // → table
 scene.set("flagged", flagged.length);  // → metric
 scene.set("draft",   draft);           // → text/json (auto-inferred)
+
+// Optional: declare what the agent INTENDS before an action runs.
+// Viewers render intent and outcome side-by-side; divergence is drift.
+scene.intent("gmail", { tool: "gmail_send_email", to, subject });
+await sendEmail(...);
+scene.set("gmail", world.gmail);       // outcome
 ```
 
 Each call adds an event named `scene.set` to the active OTel span. The widget hint is inferred from the value's shape; override with `{ as }`.
@@ -137,16 +143,17 @@ This SDK is the substrate behind [daslab.dev](https://daslab.dev) — a platform
 
 ## Roadmap
 
-v0.0.3 (current)
+v0.0.4 (current)
 
 - ✅ `scene.set / commit / pending`, auto widget-type inference, content hashing, graceful no-op
+- ✅ `scene.intent` — agent's predicted/intended state, rendered side-by-side with the outcome
 - ✅ `sceneDiff` + `buildSnapshot`
-- ✅ Static HTML scrubber + 8 fixtures, hosted on Pages
-- ✅ AutomationBench: 49 JSON Schemas, 806 task defs, 3 hand-scripted fixtures
+- ✅ Static HTML scrubber + 11 fixtures, hosted on Pages
+- ✅ AutomationBench: 49 JSON Schemas, 806 task defs, 3 hand-scripted fixtures, 3 real-model (claude-haiku-4-5) fixtures via `integrations/automationbench/`
 
 Coming next
 
-- Real-model AutomationBench runs — instrument their Verifiers env so `scene.set` fires per actual tool call
+- More tasks + bigger models — sweep across domains, build a leaderboard of belief-vs-outcome accuracy
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
 
 ## License

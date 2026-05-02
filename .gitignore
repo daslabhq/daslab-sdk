@@ -5,3 +5,4 @@ dist/
 bun.lock
 test-results/
 playwright-report/
+__pycache__/

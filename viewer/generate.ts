@@ -96,6 +96,8 @@ step("sales.multi_hop_lookup", () => {
 
   scene.set("account_tier", "unknown", { description: "must resolve from sheet" });
 
+  // Agent declares intent before pulling the FX sheet
+  scene.intent("fx_rates", { tool: "google_sheets_get_many_rows", sheet: "FX Rates", expects: "EUR + GBP rates" }, { description: "google_sheets_get_many_rows" });
   scene.set("fx_rates", [
     { Currency: "EUR", USDRate: 1.10, Updated: "2026-01-10" },
     { Currency: "GBP", USDRate: 1.27, Updated: "2026-01-10" },
@@ -105,6 +107,7 @@ step("sales.multi_hop_lookup", () => {
 
   scene.set("account_tier", "Enterprise", { description: "resolved from Account Hierarchy sheet" });
 
+  scene.intent("escalations_open", { tool: "salesforce_query", q: "Cases WHERE AccountId='meridian' AND Priority IN ('High','Critical')" }, { description: "salesforce_query" });
   scene.set("escalations_open", [
     { case_id: "c-981", priority: "High", subject: "API rate limits" },
   ]);
@@ -114,6 +117,8 @@ step("sales.multi_hop_lookup", () => {
     "support-escalation@example.com",
   ]);
 
+  // Intent: send 2 emails. Outcome: 2 emails sent.
+  scene.intent("emails_sent", { tool: "gmail_send_email", planned: 2, recipients: ["executive-team@example.com", "support-escalation@example.com"] }, { description: "gmail_send_email × 2" });
   scene.set("emails_sent", [
     { to: "executive-team@example.com", subject: "Meridian Corp won — $269.5K" },
     { to: "support-escalation@example.com", subject: "Heads up — Meridian win, open Hi-pri case c-981" },

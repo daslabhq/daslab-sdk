@@ -1,6 +1,6 @@
 {
   "name": "scene-otel",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Three lines and your agent's traces tell you what your agent knew, not just what it did. The scene SDK for AI agents.",
   "license": "MIT",
   "type": "module",

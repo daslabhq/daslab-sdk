@@ -46,11 +46,19 @@ export type InferredType =
   | "list"
   | "json";
 
+export type SceneKind = "actual" | "intent";
+
 export interface SceneSetOptions {
   /** Override the inferred widget type. */
   as?: InferredType;
   /** Optional human-readable description for UIs / LLM specs. */
   description?: string;
+  /**
+   * Whether this snapshot is the actual world state ("actual", default)
+   * or a predicted/intended state before an action runs ("intent").
+   * scene.intent(...) is sugar for set(..., { kind: "intent" }).
+   */
+  kind?: SceneKind;
 }
 
 interface PendingSet {
@@ -58,6 +66,7 @@ interface PendingSet {
   value: unknown;
   type:  InferredType;
   ts:    number;
+  kind:  SceneKind;
   description?: string;
 }
 
@@ -76,10 +85,21 @@ function set(key: string, value: unknown, opts: SceneSetOptions = {}): void {
     value,
     type,
     ts: Date.now(),
+    kind: opts.kind ?? "actual",
     description: opts.description,
   };
   pending.push(item);
   emitEvent([item]);
+}
+
+/**
+ * Snapshot what the agent INTENDS to do — the predicted world delta or
+ * the args of a tool call about to fire. Same wire shape as scene.set
+ * but tagged with kind="intent" so viewers can render side-by-side
+ * with the actual outcome and surface drift.
+ */
+function intent(key: string, value: unknown, opts: SceneSetOptions = {}): void {
+  set(key, value, { ...opts, kind: "intent" });
 }
 
 /**
@@ -127,6 +147,7 @@ function emitEvent(items: PendingSet[]): void {
     span.addEvent("scene.set", {
       "scene.key":            item.key,
       "scene.commit_hash":    commitHash,
+      "scene.kind":           item.kind,
       "scene.value.type":     item.type,
       "scene.value.size":     valueJson.length,
       "scene.value":          valueJson.length > MAX_VALUE_BYTES
@@ -186,10 +207,11 @@ function inferType(value: unknown): InferredType {
 
 export const scene = {
   set,
+  intent,
   commit,
   pending: pendingSets,
   _resetForTests,
 };
 
 // Also export individual functions for users who prefer them
-export { set, commit, inferType };
+export { set, intent, commit, inferType };
