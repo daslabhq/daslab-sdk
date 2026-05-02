@@ -8,6 +8,8 @@
 
 *Above: the bundled scrubber stepping through one of [AutomationBench](https://github.com/zapier/AutomationBench)'s tasks (`simple.email_sf_contact_phone_update` — find Jordan Lee's email, extract her new phone number, update the Salesforce contact). The agent's view of the world emerges step by step.*
 
+**Try it live →** <https://daslabhq.github.io/daslab-sdk/>
+
 ## Install
 
 ```bash
@@ -99,6 +101,8 @@ Useful for: comparing two prompts on the same input, detecting belief drift mid-
 
 A single HTML file under [`viewer/`](./viewer) parses JSONL OTel traces and renders the scene timeline as scrubbable cards (table / metric / text / image / json). No build step.
 
+Live: <https://daslabhq.github.io/daslab-sdk/> · or run locally:
+
 ```bash
 cd viewer
 python3 -m http.server 5173
@@ -137,14 +141,13 @@ v0.0.3 (current)
 
 - ✅ `scene.set / commit / pending`, auto widget-type inference, content hashing, graceful no-op
 - ✅ `sceneDiff` + `buildSnapshot`
-- ✅ Static HTML scrubber + 8 fixtures
+- ✅ Static HTML scrubber + 8 fixtures, hosted on Pages
 - ✅ AutomationBench: 49 JSON Schemas, 806 task defs, 3 hand-scripted fixtures
 
 Coming next
 
 - Real-model AutomationBench runs — instrument their Verifiers env so `scene.set` fires per actual tool call
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
-- Hosted scrubber on GitHub Pages
 
 ## License
 
