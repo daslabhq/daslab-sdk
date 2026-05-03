@@ -10,7 +10,7 @@
 
 **Try it live →** <https://daslabhq.github.io/scene-otel/>
 
-> **Where things live.** `scene-otel` is the **wire format** — `scene.set` events, hashing, diff, and a generic scrubber. Typed canonical asset shapes (Email, Message, Calendar, …) and the multi-format renderer live in [`scene-state`](https://github.com/daslabhq/scene-state). Adapters for specific benchmarks (AutomationBench, τ-bench, LeRobot) and bench-scoped vendor types (Gmail, Salesforce, Slack) live in [`scene-bench`](https://github.com/daslabhq/scene-bench).
+> **Where things live.** `scene-otel` is the **wire format** — `scene.set` events, hashing, diff, and a generic scrubber. Typed canonical asset shapes (Email, Message, Calendar, …) and the multi-format renderer live in [`scene-views`](https://github.com/daslabhq/scene-views). Adapters for specific benchmarks (AutomationBench, τ-bench, LeRobot) and bench-scoped vendor types (Gmail, Salesforce, Slack) live in [`scene-bench`](https://github.com/daslabhq/scene-bench).
 
 ## Install
 
@@ -119,7 +119,7 @@ This SDK is the substrate behind [daslab.dev](https://daslab.dev) — a platform
 
 ## Roadmap
 
-v0.0.5 (current)
+v0.0.6 (current)
 
 - ✅ `scene.set / commit / pending`, auto widget-type inference, content hashing, graceful no-op
 - ✅ `sceneDiff` + `buildSnapshot`
@@ -128,7 +128,7 @@ v0.0.5 (current)
 Coming next
 
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
-- Tighter integration with [`scene-state`](https://github.com/daslabhq/scene-state) views and [`scene-bench`](https://github.com/daslabhq/scene-bench) bench fixtures
+- Tighter integration with [`scene-views`](https://github.com/daslabhq/scene-views) views and [`scene-bench`](https://github.com/daslabhq/scene-bench) bench fixtures
 
 ## License
 
@@ -136,7 +136,7 @@ MIT. See [LICENSE](./LICENSE).
 
 ## Related
 
-- [`scene-state`](https://github.com/daslabhq/scene-state) — typed canonical asset shapes (Email, Message, Calendar, …) + sized views that render to HTML / Markdown / Text. The visual language for everything `scene-otel` emits.
+- [`scene-views`](https://github.com/daslabhq/scene-views) — typed canonical asset shapes (Email, Message, Calendar, …) + sized views that render to HTML / Markdown / Text. The visual language for everything `scene-otel` emits.
 - [`scene-bench`](https://github.com/daslabhq/scene-bench) — open harness for running, measuring, and visualizing agent benchmarks. Adapters for AutomationBench, τ-bench, LeRobot, …
 - [`agent-otel`](https://github.com/mirkokiefer/agent-otel) — the OTel router for agent telemetry. Fanout to any sink.
 - [`scry`](https://github.com/mirkokiefer/agent-otel#scry--sdk-and-cli-for-agents-to-query-their-own-traces) — SDK + CLI for agents to query their own traces. Bundled with `agent-otel`.
