@@ -10,7 +10,7 @@
 
 **Try it live →** <https://daslabhq.github.io/scene-otel/>
 
-> **Where things live.** `scene-otel` is the **wire format** — `scene.set` events, hashing, diff, and a generic scrubber. Typed canonical asset shapes (Email, Message, Calendar, …) and the multi-format renderer live in [`scene-views`](https://github.com/daslabhq/scene-views). Adapters for specific benchmarks (AutomationBench, τ-bench, LeRobot) and bench-scoped vendor types (Gmail, Salesforce, Slack) live in [`scene-bench`](https://github.com/daslabhq/scene-bench).
+> **Where things live.** `scene-otel` is the **wire format** — `scene.set` events, hashing, diff, and a generic scrubber. Typed canonical asset shapes (Email, Message, Calendar, …) and the multi-format renderer live in [`scenecast`](https://github.com/daslabhq/scenecast). Adapters for specific benchmarks (AutomationBench, τ-bench, LeRobot) and bench-scoped vendor types (Gmail, Salesforce, Slack) live in [`scenebench`](https://github.com/daslabhq/scenebench).
 
 ## Install
 
@@ -111,7 +111,7 @@ python3 -m http.server 5173
 # http://localhost:5173
 ```
 
-Five synthetic agent runs are bundled — generic substrate examples (sales, support, marketing, HR, gmail-triage). Looking for AutomationBench traces, schemas, or task dumps? They live in [`scene-bench`](https://github.com/daslabhq/scene-bench) — the harness wraps Sierra's Verifiers env, syncs the 49 typed JSON Schemas + 806 tasks, and ships the JSONL fixtures.
+Five synthetic agent runs are bundled — generic substrate examples (sales, support, marketing, HR, gmail-triage). Looking for AutomationBench traces, schemas, or task dumps? They live in [`scenebench`](https://github.com/daslabhq/scenebench) — the harness wraps Sierra's Verifiers env, syncs the 49 typed JSON Schemas + 806 tasks, and ships the JSONL fixtures.
 
 ## Daslab platform
 
@@ -128,7 +128,7 @@ v0.0.6 (current)
 Coming next
 
 - `defineScene({ key, schema })` — typed scene declarations with JSON Schema validation
-- Tighter integration with [`scene-views`](https://github.com/daslabhq/scene-views) views and [`scene-bench`](https://github.com/daslabhq/scene-bench) bench fixtures
+- Tighter integration with [`scenecast`](https://github.com/daslabhq/scenecast) views and [`scenebench`](https://github.com/daslabhq/scenebench) bench fixtures
 
 ## License
 
@@ -136,8 +136,8 @@ MIT. See [LICENSE](./LICENSE).
 
 ## Related
 
-- [`scene-views`](https://github.com/daslabhq/scene-views) — typed canonical asset shapes (Email, Message, Calendar, …) + sized views that render to HTML / Markdown / Text. The visual language for everything `scene-otel` emits.
-- [`scene-bench`](https://github.com/daslabhq/scene-bench) — open harness for running, measuring, and visualizing agent benchmarks. Adapters for AutomationBench, τ-bench, LeRobot, …
+- [`scenecast`](https://github.com/daslabhq/scenecast) — typed canonical asset shapes (Email, Message, Calendar, …) + sized views that render to HTML / Markdown / Text. The visual language for everything `scene-otel` emits.
+- [`scenebench`](https://github.com/daslabhq/scenebench) — open harness for running, measuring, and visualizing agent benchmarks. Adapters for AutomationBench, τ-bench, LeRobot, …
 - [`agent-otel`](https://github.com/mirkokiefer/agent-otel) — the OTel router for agent telemetry. Fanout to any sink.
 - [`scry`](https://github.com/mirkokiefer/agent-otel#scry--sdk-and-cli-for-agents-to-query-their-own-traces) — SDK + CLI for agents to query their own traces. Bundled with `agent-otel`.
 - [`autocompile`](https://github.com/mirkokiefer/autocompile) — observes repeated agent runs and compiles the invariant parts into code, leaving the LLM only the decisions that need judgment.
