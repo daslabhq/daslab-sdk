@@ -15,7 +15,6 @@
 export {
   scene,
   set,
-  intent,
   commit,
   inferType,
   type InferredType,

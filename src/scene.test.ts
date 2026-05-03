@@ -110,34 +110,15 @@ describe("scene.set", () => {
 });
 
 // ---------------------------------------------------------------------------
-// scene.intent — sugar for set(..., { kind: "intent" })
+// scene.kind — wire shape preserved for future tool-call instrumentation
 // ---------------------------------------------------------------------------
 
-describe("scene.intent", () => {
-  test("emits scene.kind=intent", () => {
+describe("scene.kind on the wire", () => {
+  test("scene.set always emits kind=actual", () => {
     const { span } = withActiveSpan(() => {
-      scene.intent("gmail", { tool: "gmail_send_email", to: "alice", subject: "hi" });
+      scene.set("inbox", [{ id: 1 }]);
     });
-    const ev = span.events[0]!;
-    expect(ev.attributes?.["scene.kind"]).toBe("intent");
-    expect(ev.attributes?.["scene.key"]).toBe("gmail");
-  });
-
-  test("intent and actual can carry the same key", () => {
-    const { span } = withActiveSpan(() => {
-      scene.intent("gmail", { tool: "gmail_send_email", to: "alice" }, { description: "about to send" });
-      scene.set("gmail", { sent_count: 1 }, { description: "after send" });
-    });
-    expect(span.events).toHaveLength(2);
-    expect(span.events[0]!.attributes?.["scene.kind"]).toBe("intent");
-    expect(span.events[1]!.attributes?.["scene.kind"]).toBe("actual");
-  });
-
-  test("explicit kind on set() matches intent() sugar", () => {
-    const { span: sA } = withActiveSpan(() => scene.set("k", 1, { kind: "intent" }));
-    const { span: sB } = withActiveSpan(() => scene.intent("k", 1));
-    expect(sA.events[0]!.attributes?.["scene.kind"]).toBe("intent");
-    expect(sB.events[0]!.attributes?.["scene.kind"]).toBe("intent");
+    expect(span.events[0]!.attributes?.["scene.kind"]).toBe("actual");
   });
 });
 

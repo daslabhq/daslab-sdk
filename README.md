@@ -6,7 +6,7 @@
 
 ![scrubber demo](./docs/readme-demo.gif)
 
-*Above: an agent run rendered in the static scrubber. Amber boxes show the model's **intent** before each tool call; white cards below show the **actual** world state after. Stepping through reveals exactly where belief diverged from outcome.*
+*Above: an agent run rendered in the static scrubber. Each step's snapshot of the world state — inbox, flagged count, draft, etc. — surfaces inline so you can see what the agent knew, not just what it did.*
 
 **Try it live →** <https://daslabhq.github.io/scene-otel/>
 
@@ -26,12 +26,6 @@ import { scene } from "scene-otel";
 scene.set("inbox",   emails);          // → table
 scene.set("flagged", flagged.length);  // → metric
 scene.set("draft",   draft);           // → text/json (auto-inferred)
-
-// Optional: declare what the agent INTENDS before an action runs.
-// Viewers render intent and outcome side-by-side; divergence is drift.
-scene.intent("gmail", { tool: "gmail_send_email", to, subject });
-await sendEmail(...);
-scene.set("gmail", world.gmail);       // outcome
 ```
 
 Each call adds an event named `scene.set` to the active OTel span. The widget hint is inferred from the value's shape; override with `{ as }`.
@@ -128,7 +122,6 @@ This SDK is the substrate behind [daslab.dev](https://daslab.dev) — a platform
 v0.0.5 (current)
 
 - ✅ `scene.set / commit / pending`, auto widget-type inference, content hashing, graceful no-op
-- ✅ `scene.intent` — agent's predicted/intended state, rendered side-by-side with the outcome
 - ✅ `sceneDiff` + `buildSnapshot`
 - ✅ Static HTML scrubber + 5 synthetic fixtures, hosted on Pages
 

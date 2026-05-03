@@ -14,15 +14,13 @@
  *   - scene.value           — JSON-encoded value (truncated)
  *   - scene.value.type      — inferred widget type (table/metric/text/...)
  *   - scene.value.size      — JSON byte size (for budget tracking)
+ *   - scene.kind            — "actual" (snapshots are world state by default;
+ *                             tool-call instrumentation may tag span events
+ *                             with "intent" via internal helpers)
  *
  * scry reads these events and reconstructs the scene timeline. No
  * scene-tree dependency, no postgres dependency, no Daslab account
  * required. Works against any OTel SpanProcessor.
- *
- * Daslab platform users get the upgrade for free: when an active
- * span has the daslab.platform attribute, the runtime ALSO commits
- * the snapshot to scene-tree so the multi-platform reactive scene
- * sync picks it up. That's opt-in, not required.
  *
  * Auto-widget inference (used by scry to pick a renderer):
  *   array of objects with consistent keys  → 'table'
@@ -46,6 +44,13 @@ export type InferredType =
   | "list"
   | "json";
 
+/** Wire-level tag distinguishing the actual world state from a
+ *  predicted/intended state. Snapshots from `scene.set()` are always
+ *  "actual"; "intent" is reserved for tool-call instrumentation that
+ *  derives the intent automatically from the call's input args, not
+ *  from user code. There's intentionally no public API to set this
+ *  manually — asking the agent to predict outcomes is wasted compute,
+ *  and the tool call is already the structured intent. */
 export type SceneKind = "actual" | "intent";
 
 export interface SceneSetOptions {
@@ -53,12 +58,6 @@ export interface SceneSetOptions {
   as?: InferredType;
   /** Optional human-readable description for UIs / LLM specs. */
   description?: string;
-  /**
-   * Whether this snapshot is the actual world state ("actual", default)
-   * or a predicted/intended state before an action runs ("intent").
-   * scene.intent(...) is sugar for set(..., { kind: "intent" }).
-   */
-  kind?: SceneKind;
 }
 
 interface PendingSet {
@@ -85,21 +84,11 @@ function set(key: string, value: unknown, opts: SceneSetOptions = {}): void {
     value,
     type,
     ts: Date.now(),
-    kind: opts.kind ?? "actual",
+    kind: "actual",
     description: opts.description,
   };
   pending.push(item);
   emitEvent([item]);
-}
-
-/**
- * Snapshot what the agent INTENDS to do — the predicted world delta or
- * the args of a tool call about to fire. Same wire shape as scene.set
- * but tagged with kind="intent" so viewers can render side-by-side
- * with the actual outcome and surface drift.
- */
-function intent(key: string, value: unknown, opts: SceneSetOptions = {}): void {
-  set(key, value, { ...opts, kind: "intent" });
 }
 
 /**
@@ -207,11 +196,10 @@ function inferType(value: unknown): InferredType {
 
 export const scene = {
   set,
-  intent,
   commit,
   pending: pendingSets,
   _resetForTests,
 };
 
 // Also export individual functions for users who prefer them
-export { set, intent, commit, inferType };
+export { set, commit, inferType };
