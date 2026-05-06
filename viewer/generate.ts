@@ -47,6 +47,38 @@ function step(name: string, fn: () => void): void {
   span.end();
 }
 
+/**
+ * Emit an LLM call span using OpenInference semantic conventions, so the
+ * viewer can render the actual messages alongside scene state.
+ *
+ * 1ms sleep ensures each LLM span gets a distinct epoch-ms start time, which
+ * keeps the unified scene+message timeline ordered correctly. (OTel scene
+ * events use hrTime ns-precision; startSpan only gets ms — without the sleep,
+ * back-to-back llm() calls would collide.)
+ */
+function llm(opts: {
+  name: string;
+  model: string;
+  input: Array<{ role: "system" | "user" | "assistant" | "tool"; content: string }>;
+  output: { role: "assistant"; content: string };
+}): void {
+  Bun.sleepSync(1);
+  const span = tracer.startSpan(opts.name);
+  const attrs: Record<string, string | number> = {
+    "openinference.span.kind": "LLM",
+    "llm.model_name": opts.model,
+  };
+  opts.input.forEach((m, i) => {
+    attrs[`llm.input_messages.${i}.message.role`] = m.role;
+    attrs[`llm.input_messages.${i}.message.content`] = m.content;
+  });
+  attrs[`llm.output_messages.0.message.role`] = opts.output.role;
+  attrs[`llm.output_messages.0.message.content`] = opts.output.content;
+  span.setAttributes(attrs);
+  Bun.sleepSync(1);
+  span.end();
+}
+
 function dumpJsonl(file: string): void {
   const spans = exporter.getFinishedSpans();
   const lines = spans.map(serializeSpan).join("\n");
@@ -80,6 +112,109 @@ function hrToNs(hr: [number, number]): number {
 
 const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), "example-traces");
 mkdirSync(FIXTURES_DIR, { recursive: true });
+
+// gmail-triage runs first so it's regenerable in isolation. Set GMAIL_ONLY=1
+// to skip the others (sales/support/marketing/hr fixtures still rely on the
+// removed scene.intent helper and are kept as committed JSONL artifacts).
+
+// ---------------------------------------------------------------------------
+// 0. SIMPLE — gmail triage (the canonical "small agent" demo, with messages)
+// ---------------------------------------------------------------------------
+
+step("simple.gmail_triage", () => {
+  scene.set("inbox", [
+    { id: "m-1", from: "alice@vendor.com",  subject: "Invoice #4421 — overdue",      unread: true },
+    { id: "m-2", from: "newsletter@nyt",   subject: "Morning briefing",              unread: true },
+    { id: "m-3", from: "bob@team",          subject: "Re: standup",                  unread: true },
+    { id: "m-4", from: "alerts@stripe",     subject: "Payout completed: $1,200",    unread: true },
+    { id: "m-5", from: "ceo@company.com",   subject: "Quick question",               unread: true },
+  ], { description: "5 unread emails" });
+
+  scene.set("unread_count", 5);
+
+  scene.set("classifier_rules", [
+    { from_contains: "invoice",  label: "billing" },
+    { from_contains: "alerts@",  label: "ops" },
+    { from_contains: "ceo@",     label: "vip" },
+    { from_contains: "newsletter", label: "newsletter" },
+  ]);
+
+  llm({
+    name: "llm.classify",
+    model: "gpt-4o",
+    input: [
+      { role: "system", content: "You triage incoming emails. Apply the provided classifier rules and return one label per email, or null if no rule matches." },
+      { role: "user", content: "Classify these 5 emails:\n- m-1 from alice@vendor.com — Invoice #4421 — overdue\n- m-2 from newsletter@nyt — Morning briefing\n- m-3 from bob@team — Re: standup\n- m-4 from alerts@stripe — Payout completed: $1,200\n- m-5 from ceo@company.com — Quick question\n\nRules: invoice→billing, alerts@→ops, ceo@→vip, newsletter→newsletter." },
+    ],
+    output: {
+      role: "assistant",
+      content: "m-1: billing (subject contains \"invoice\")\nm-2: newsletter (from newsletter@)\nm-3: null (no rule matches)\nm-4: ops (from alerts@)\nm-5: vip (from ceo@)",
+    },
+  });
+
+  scene.set("classified", [
+    { id: "m-1", label: "billing" },
+    { id: "m-2", label: "newsletter" },
+    { id: "m-3", label: null },
+    { id: "m-4", label: "ops" },
+    { id: "m-5", label: "vip" },
+  ]);
+
+  llm({
+    name: "llm.flag",
+    model: "gpt-4o",
+    input: [
+      { role: "system", content: "Flag emails that need a human reply today. Be conservative — only flag billing issues, VIP senders, or anything time-sensitive." },
+      { role: "user", content: "Given the classified inbox, which need attention today?" },
+    ],
+    output: {
+      role: "assistant",
+      content: "Two need attention:\n1. m-1 (billing) — overdue invoice, needs a reply confirming payment\n2. m-5 (vip) — CEO asking a quick question\n\nThe rest can wait or be archived.",
+    },
+  });
+
+  scene.set("flagged", [
+    { id: "m-1", label: "billing", reason: "Overdue invoice — needs reply" },
+    { id: "m-5", label: "vip",     reason: "From CEO" },
+  ]);
+
+  llm({
+    name: "llm.draft_reply",
+    model: "gpt-4o",
+    input: [
+      { role: "system", content: "Draft a short, professional reply to the flagged email. Keep it under 3 sentences." },
+      { role: "user", content: "Draft a reply to alice@vendor.com about Invoice #4421 (overdue). Acknowledge and confirm we'll process today." },
+    ],
+    output: {
+      role: "assistant",
+      content: "Hi Alice — confirming we'll process this today. Apologies for the delay.",
+    },
+  });
+
+  scene.set("draft", {
+    to: "alice@vendor.com",
+    subject: "Re: Invoice #4421",
+    body: "Hi Alice — confirming we'll process this today. Apologies for the delay.",
+  });
+
+  scene.set("inbox", [
+    { id: "m-1", from: "alice@vendor.com",  subject: "Invoice #4421 — overdue",      unread: false },
+    { id: "m-2", from: "newsletter@nyt",   subject: "Morning briefing",              unread: false },
+    { id: "m-3", from: "bob@team",          subject: "Re: standup",                  unread: true  },
+    { id: "m-4", from: "alerts@stripe",     subject: "Payout completed: $1,200",    unread: false },
+    { id: "m-5", from: "ceo@company.com",   subject: "Quick question",               unread: false },
+  ]);
+
+  scene.set("unread_count", 1);
+
+  scene.set("status", "triage_complete");
+});
+dumpJsonl(join(FIXTURES_DIR, "gmail-triage.jsonl"));
+
+if (process.env.GMAIL_ONLY) {
+  console.log("✓ generated gmail-triage.jsonl");
+  process.exit(0);
+}
 
 // ---------------------------------------------------------------------------
 // 1. SALES — Meridian-style multi-hop lookup
@@ -239,60 +374,5 @@ step("hr.onboarding", () => {
   scene.set("status", "ready", { description: "all 3 hires queued" });
 });
 dumpJsonl(join(FIXTURES_DIR, "hr-onboarding.jsonl"));
-
-// ---------------------------------------------------------------------------
-// 5. SIMPLE — gmail triage (the canonical "small agent" demo)
-// ---------------------------------------------------------------------------
-
-step("simple.gmail_triage", () => {
-  scene.set("inbox", [
-    { id: "m-1", from: "alice@vendor.com",  subject: "Invoice #4421 — overdue",      unread: true },
-    { id: "m-2", from: "newsletter@nyt",   subject: "Morning briefing",              unread: true },
-    { id: "m-3", from: "bob@team",          subject: "Re: standup",                  unread: true },
-    { id: "m-4", from: "alerts@stripe",     subject: "Payout completed: $1,200",    unread: true },
-    { id: "m-5", from: "ceo@company.com",   subject: "Quick question",               unread: true },
-  ], { description: "5 unread emails" });
-
-  scene.set("unread_count", 5);
-
-  scene.set("classifier_rules", [
-    { from_contains: "invoice",  label: "billing" },
-    { from_contains: "alerts@",  label: "ops" },
-    { from_contains: "ceo@",     label: "vip" },
-    { from_contains: "newsletter", label: "newsletter" },
-  ]);
-
-  scene.set("classified", [
-    { id: "m-1", label: "billing" },
-    { id: "m-2", label: "newsletter" },
-    { id: "m-3", label: null },
-    { id: "m-4", label: "ops" },
-    { id: "m-5", label: "vip" },
-  ]);
-
-  scene.set("flagged", [
-    { id: "m-1", label: "billing", reason: "Overdue invoice — needs reply" },
-    { id: "m-5", label: "vip",     reason: "From CEO" },
-  ]);
-
-  scene.set("draft", {
-    to: "alice@vendor.com",
-    subject: "Re: Invoice #4421",
-    body: "Hi Alice — confirming we'll process this today. Apologies for the delay.",
-  });
-
-  scene.set("inbox", [
-    { id: "m-1", from: "alice@vendor.com",  subject: "Invoice #4421 — overdue",      unread: false },
-    { id: "m-2", from: "newsletter@nyt",   subject: "Morning briefing",              unread: false },
-    { id: "m-3", from: "bob@team",          subject: "Re: standup",                  unread: true  },
-    { id: "m-4", from: "alerts@stripe",     subject: "Payout completed: $1,200",    unread: false },
-    { id: "m-5", from: "ceo@company.com",   subject: "Quick question",               unread: false },
-  ]);
-
-  scene.set("unread_count", 1);
-
-  scene.set("status", "triage_complete");
-});
-dumpJsonl(join(FIXTURES_DIR, "gmail-triage.jsonl"));
 
 console.log("✓ generated 5 fixtures →", FIXTURES_DIR);
