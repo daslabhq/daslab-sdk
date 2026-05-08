@@ -14,7 +14,7 @@ const ROOT       = resolve(import.meta.dirname, "..");
 const VIEWER_DIR = join(ROOT, "viewer");
 const AB_DIR     = join(VIEWER_DIR, "ab-tasks");
 const OUT_DIR    = join(VIEWER_DIR, "tasks");
-const SITE_URL   = "https://daslabhq.github.io/scene-otel";
+const SITE_URL   = "https://scene.daslab.run";
 
 type ManifestEntry = {
   slug: string;
