@@ -922,10 +922,34 @@ document.querySelectorAll(".mode-tab").forEach(btn => {
 document.getElementById("ab-category").addEventListener("change", renderAbList);
 document.getElementById("ab-search").addEventListener("input", renderAbList);
 
+// Honor ?mode=ab&category=... deep-links (used by per-task page breadcrumbs)
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("mode") === "ab") {
+    const tab = document.querySelector('.mode-tab[data-mode="ab"]');
+    tab?.click();
+    const cat = params.get("category");
+    if (cat) {
+      // Wait for manifest load to populate the select
+      const trySetCategory = () => {
+        const sel = document.getElementById("ab-category");
+        if (sel.querySelector(`option[value="${cat}"]`)) {
+          sel.value = cat;
+          renderAbList();
+        } else if (abManifest.length === 0) {
+          setTimeout(trySetCategory, 50);
+        }
+      };
+      trySetCategory();
+    }
+  }
+})();
+
 document.getElementById("ab-list").addEventListener("click", (e) => {
   const row = e.target.closest(".ab-row");
   if (!row) return;
-  loadAbTask(row.dataset.slug, row.dataset.category);
+  // Navigate to the static per-task page (deep-linkable, OG tags, etc.)
+  window.location.href = `tasks/${row.dataset.slug}/`;
 });
 
 document.getElementById("ab-back").addEventListener("click", () => {
