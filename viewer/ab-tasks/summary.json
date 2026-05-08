@@ -1,0 +1,37 @@
+{
+  "finance": {
+    "count": 100,
+    "avg_tools": 7.8,
+    "avg_assertions": 7.1
+  },
+  "hr": {
+    "count": 100,
+    "avg_tools": 7.3,
+    "avg_assertions": 9.7
+  },
+  "marketing": {
+    "count": 100,
+    "avg_tools": 9.3,
+    "avg_assertions": 19.5
+  },
+  "operations": {
+    "count": 100,
+    "avg_tools": 9.2,
+    "avg_assertions": 14
+  },
+  "sales": {
+    "count": 106,
+    "avg_tools": 9.9,
+    "avg_assertions": 10.9
+  },
+  "simple": {
+    "count": 200,
+    "avg_tools": 2,
+    "avg_assertions": 1.2
+  },
+  "support": {
+    "count": 100,
+    "avg_tools": 12,
+    "avg_assertions": 34.9
+  }
+}

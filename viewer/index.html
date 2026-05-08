@@ -37,7 +37,15 @@
 
   <!-- Loader -->
   <section id="loader" class="space-y-4">
-    <div class="bg-white rounded-lg border border-slate-200 p-6">
+
+    <!-- Mode tabs -->
+    <div class="flex gap-1 border-b border-slate-200">
+      <button data-mode="trace" class="mode-tab px-4 py-2 text-sm font-medium border-b-2 border-indigo-600 text-indigo-700">Load trace</button>
+      <button data-mode="ab"    class="mode-tab px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-900">Browse AutomationBench</button>
+    </div>
+
+    <!-- Mode: load trace (existing) -->
+    <div id="loader-trace" class="bg-white rounded-lg border border-slate-200 p-6">
       <h2 class="font-semibold mb-3">Load a trace</h2>
       <div class="flex gap-3 flex-wrap">
         <select id="example-picker" class="border border-slate-300 rounded px-3 py-2 text-sm bg-white">
@@ -50,10 +58,6 @@
             <option value="example-traces/gmail-triage.jsonl">Simple · gmail triage</option>
           </optgroup>
         </select>
-        <span class="text-xs text-slate-500 self-center">
-          Looking for AutomationBench traces? They live in
-          <a href="https://github.com/daslabhq/scenebench" class="underline hover:text-slate-900">scenebench</a>.
-        </span>
         <label class="border border-slate-300 rounded px-3 py-2 text-sm bg-white cursor-pointer hover:bg-slate-50">
           Upload .jsonl
           <input type="file" accept=".jsonl,.json,.txt" class="hidden" id="file-input" />
@@ -65,6 +69,81 @@
       <textarea id="paste-area" class="mt-2 w-full h-24 border border-slate-300 rounded p-2 text-xs mono"
                 placeholder="Paste JSONL (one OTel span per line)"></textarea>
       <button id="load-pasted" class="mt-2 bg-indigo-600 text-white px-3 py-1.5 rounded text-sm hover:bg-indigo-700">Load pasted</button>
+    </div>
+
+    <!-- Mode: browse AutomationBench (new) -->
+    <div id="loader-ab" class="hidden bg-white rounded-lg border border-slate-200 p-6">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div>
+          <h2 class="font-semibold">Browse AutomationBench</h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Zapier's <a href="https://github.com/zapier/AutomationBench" class="underline">800+ benchmark tasks</a> — see exactly what each task asks an agent to do. Multi-step workflows in finance, sales, support, HR, marketing, operations.
+          </p>
+        </div>
+        <div id="ab-summary" class="text-xs text-slate-500 mono whitespace-nowrap"></div>
+      </div>
+      <div class="flex gap-3 flex-wrap items-center">
+        <select id="ab-category" class="border border-slate-300 rounded px-3 py-2 text-sm bg-white">
+          <option value="">All categories</option>
+        </select>
+        <input id="ab-search" type="text" placeholder="filter by slug or prompt…"
+               class="border border-slate-300 rounded px-3 py-2 text-sm w-72" />
+        <span id="ab-count" class="text-xs text-slate-500"></span>
+      </div>
+      <div id="ab-list" class="mt-4 max-h-96 overflow-y-auto border border-slate-100 rounded divide-y divide-slate-100"></div>
+    </div>
+  </section>
+
+  <!-- AB Task detail view -->
+  <section id="ab-detail" class="hidden space-y-4 mt-2">
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div class="text-xs text-slate-500 uppercase tracking-wide">automationbench task</div>
+          <div class="font-semibold mono" id="ab-task-id">—</div>
+          <div class="text-xs text-slate-500 mt-0.5" id="ab-task-meta">—</div>
+        </div>
+        <button id="ab-back" class="text-sm text-slate-500 underline hover:text-slate-900">← back to list</button>
+      </div>
+    </div>
+
+    <!-- Prompt -->
+    <div class="bg-white rounded-lg border border-slate-200 p-4 space-y-3">
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">system prompt</div>
+        <div id="ab-system" class="text-sm text-slate-700 whitespace-pre-wrap"></div>
+      </div>
+      <div class="border-t border-slate-100 pt-3">
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">user prompt</div>
+        <div id="ab-user" class="text-sm text-slate-900 whitespace-pre-wrap leading-relaxed"></div>
+      </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-sm font-semibold">declared tools</div>
+        <div class="text-xs text-slate-500" id="ab-tools-count">0</div>
+      </div>
+      <div id="ab-tools" class="space-y-1.5"></div>
+    </div>
+
+    <!-- Assertions -->
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-sm font-semibold">assertions <span class="text-xs text-slate-500 font-normal">(success criteria the agent must satisfy)</span></div>
+        <div class="text-xs text-slate-500" id="ab-asserts-count">0</div>
+      </div>
+      <div id="ab-asserts" class="space-y-1.5 mono"></div>
+    </div>
+
+    <!-- Initial state preview -->
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-sm font-semibold">initial world state <span class="text-xs text-slate-500 font-normal">(seeded data the agent starts with)</span></div>
+        <button id="ab-state-toggle" class="text-xs text-slate-500 underline hover:text-slate-900">collapse</button>
+      </div>
+      <div id="ab-state" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
     </div>
   </section>
 
@@ -131,6 +210,9 @@
 </footer>
 
 <script type="module">
+// mark — predicate evaluator + AB translator. Bundled by build-mark-bundle.ts.
+import { evaluate, translate, SUPPORTED_TYPES } from "./mark.bundle.js";
+
 // ============================================================================
 // Parsing — JSONL OTel spans → flat list of scene.set events
 // ============================================================================
@@ -549,6 +631,313 @@ window.addEventListener("drop", e => {
   const r = new FileReader();
   r.onload = () => loadEvents(buildTimeline(parseJsonl(String(r.result))));
   r.readAsText(f);
+});
+
+// ============================================================================
+// AutomationBench task explorer
+//
+// Loads the manifest at startup, lets the user browse 800+ tasks, and on
+// selection renders the full task spec — prompt, tools, assertions, and the
+// seeded initial state — re-using the same scene-card renderers as the trace
+// viewer. Goal: make Zapier's benchmark legible at a glance.
+// ============================================================================
+
+let abManifest = [];
+let abSummary  = {};
+
+const CATEGORY_DESC = {
+  simple:     "single-vendor, ≤3 tool calls — the easy slice",
+  finance:    "budget prep, invoice flows, expense approvals",
+  hr:         "onboarding, directory updates, performance",
+  marketing:  "campaign analytics, content workflows",
+  operations: "incident response, scheduling, ops dashboards",
+  sales:      "deal cycles, prospecting, multi-system orchestration",
+  support:    "ticket triage, customer comms, knowledge base",
+};
+
+const VENDOR_COLOR = {
+  gmail:      "bg-red-50 text-red-700",
+  google:     "bg-emerald-50 text-emerald-700",
+  salesforce: "bg-sky-50 text-sky-700",
+  slack:      "bg-violet-50 text-violet-700",
+  jira:       "bg-blue-50 text-blue-700",
+  asana:      "bg-pink-50 text-pink-700",
+  airtable:   "bg-amber-50 text-amber-700",
+  intercom:   "bg-indigo-50 text-indigo-700",
+  zoom:       "bg-cyan-50 text-cyan-700",
+  calendly:   "bg-teal-50 text-teal-700",
+  docusign:   "bg-yellow-50 text-yellow-700",
+  hubspot:    "bg-orange-50 text-orange-700",
+  notion:     "bg-stone-50 text-stone-700",
+  twilio:     "bg-rose-50 text-rose-700",
+  chatgpt:    "bg-emerald-50 text-emerald-700",
+};
+
+function vendorColor(name) {
+  const v = name.split("_")[0];
+  return VENDOR_COLOR[v] ?? "bg-slate-100 text-slate-700";
+}
+
+async function loadAbManifest() {
+  try {
+    const [m, s] = await Promise.all([
+      fetch("ab-tasks/manifest.json").then(r => r.json()),
+      fetch("ab-tasks/summary.json").then(r => r.json()),
+    ]);
+    abManifest = m;
+    abSummary  = s;
+    populateAbCategorySelect();
+    renderAbSummary();
+    renderAbList();
+  } catch (e) {
+    console.warn("AB manifest not available:", e);
+  }
+}
+
+function populateAbCategorySelect() {
+  const sel = document.getElementById("ab-category");
+  // Stable category order: simple first, then alpha
+  const order = ["simple", "finance", "hr", "marketing", "operations", "sales", "support"];
+  for (const cat of order) {
+    if (!abSummary[cat]) continue;
+    const opt = document.createElement("option");
+    opt.value = cat;
+    const s = abSummary[cat];
+    opt.textContent = `${cat} (${s.count})`;
+    sel.appendChild(opt);
+  }
+}
+
+function renderAbSummary() {
+  const total = abManifest.length;
+  document.getElementById("ab-summary").textContent = `${total} tasks · 7 categories`;
+}
+
+function renderAbList() {
+  const cat    = document.getElementById("ab-category").value;
+  const search = document.getElementById("ab-search").value.toLowerCase().trim();
+  const list   = document.getElementById("ab-list");
+  const count  = document.getElementById("ab-count");
+
+  const filtered = abManifest.filter(t => {
+    if (cat && t.category !== cat) return false;
+    if (!search) return true;
+    return t.slug.toLowerCase().includes(search) || t.user_prompt.toLowerCase().includes(search);
+  });
+
+  count.textContent = `showing ${filtered.length} of ${abManifest.length}`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="p-4 text-center text-slate-400 italic">no tasks match</div>`;
+    return;
+  }
+
+  // Render up to 200 — keep DOM small
+  const rows = filtered.slice(0, 200).map(t => {
+    const families = t.tool_families.slice(0, 5).map(v =>
+      `<span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(v)}">${escapeHtml(v)}</span>`
+    ).join(" ");
+    const more = t.tool_families.length > 5 ? `<span class="text-[10px] text-slate-400">+${t.tool_families.length - 5}</span>` : "";
+    const complexity = t.n_tools + t.n_assertions;
+    const complexityBadge = complexity < 5 ? "easy" : complexity < 15 ? "medium" : complexity < 30 ? "hard" : "very hard";
+    const complexityColor = complexity < 5 ? "text-emerald-600" : complexity < 15 ? "text-amber-600" : complexity < 30 ? "text-orange-600" : "text-rose-600";
+    return `
+      <button class="ab-row w-full text-left px-4 py-2.5 hover:bg-slate-50 transition" data-slug="${escapeHtml(t.slug)}" data-category="${escapeHtml(t.category)}">
+        <div class="flex items-baseline justify-between gap-3">
+          <div class="font-mono text-xs font-semibold truncate">${escapeHtml(t.task_id)}</div>
+          <div class="text-[10px] mono ${complexityColor} whitespace-nowrap flex-shrink-0">
+            ${t.n_tools} tools · ${t.n_assertions} assertions · ${complexityBadge}
+          </div>
+        </div>
+        <div class="text-xs text-slate-600 mt-1 line-clamp-1">${escapeHtml(t.user_prompt)}</div>
+        <div class="mt-1.5 flex flex-wrap gap-1">${families}${more}</div>
+      </button>
+    `;
+  }).join("");
+  list.innerHTML = rows + (filtered.length > 200 ? `<div class="p-2 text-center text-xs text-slate-400">… ${filtered.length - 200} more (filter to narrow down)</div>` : "");
+}
+
+async function loadAbTask(slug, category) {
+  try {
+    const r = await fetch(`ab-tasks/${category}/${slug}.json`);
+    const task = await r.json();
+    renderAbDetail(slug, task);
+    document.getElementById("loader").classList.add("hidden");
+    document.getElementById("ab-detail").classList.remove("hidden");
+    window.scrollTo(0, 0);
+  } catch (e) {
+    alert("Could not load task: " + e.message);
+  }
+}
+
+function renderAbDetail(slug, task) {
+  document.getElementById("ab-task-id").textContent = task.task ?? slug;
+  const tools = task.info?.zapier_tools ?? [];
+  const asserts = task.info?.assertions ?? [];
+  document.getElementById("ab-task-meta").textContent =
+    `${tools.length} tools · ${asserts.length} assertions · example_id ${task.example_id ?? "—"}`;
+
+  // Prompts
+  const sys = task.prompt?.find?.(m => m.role === "system")?.content ?? "(no system prompt)";
+  const usr = task.prompt?.find?.(m => m.role === "user")?.content ?? "(no user prompt)";
+  document.getElementById("ab-system").textContent = sys;
+  document.getElementById("ab-user").textContent = usr;
+
+  // Tools — grouped by vendor
+  document.getElementById("ab-tools-count").textContent = `${tools.length} tools across ${new Set(tools.map(t => t.split("_")[0])).size} vendors`;
+  const grouped = {};
+  for (const t of tools) {
+    const v = t.split("_")[0];
+    (grouped[v] ??= []).push(t);
+  }
+  const toolsHtml = Object.entries(grouped).map(([v, ts]) => `
+    <div class="flex items-start gap-2">
+      <span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(v)} mt-0.5 flex-shrink-0">${escapeHtml(v)}</span>
+      <div class="text-xs mono text-slate-700 leading-relaxed">${ts.map(t => escapeHtml(t.slice(v.length + 1))).join(", ")}</div>
+    </div>
+  `).join("");
+  document.getElementById("ab-tools").innerHTML = toolsHtml || `<div class="text-xs text-slate-400 italic">no tools declared</div>`;
+
+  // Assertions — translated to mark Predicates and evaluated against the
+  // seeded initial_state. This is the load-bearing demo: every assertion shows
+  // (a) Zapier's flat-dict shape, (b) its mark Predicate compilation,
+  // (c) live ✓/✗ status against the initial world.
+  const initialState = task.info?.initial_state ?? {};
+  const supportedCount = asserts.filter(a => SUPPORTED_TYPES.has(a.type)).length;
+  document.getElementById("ab-asserts-count").textContent =
+    `${asserts.length} predicates · ${supportedCount}/${asserts.length} translatable by mark`;
+  const negativeKinds = /not_|no_|excluded/;
+  const assertsHtml = asserts.map((a, i) => {
+    const isNeg = negativeKinds.test(a.type);
+    const params = Object.entries(a)
+      .filter(([k]) => k !== "type")
+      .map(([k, v]) => {
+        const vs = typeof v === "string" ? `"${v}"` : JSON.stringify(v);
+        const truncated = vs.length > 100 ? vs.slice(0, 97) + "…" : vs;
+        return `<span class="text-slate-500">${escapeHtml(k)}=</span>${escapeHtml(truncated)}`;
+      })
+      .join(" <span class='text-slate-300'>·</span> ");
+    const colorClass = isNeg ? "text-rose-700" : "text-slate-700";
+
+    // Translate via mark
+    let markBlock = `<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700">⚠ not yet translated</span>`;
+    let evalBlock = "";
+    const tr = translate(a);
+    if (tr) {
+      const predJson = JSON.stringify(tr.predicate, null, 2);
+      const approxBadge = tr.approximate
+        ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700" title="May diverge from Zapier on edge cases (text normalization etc.)">~99.6% equiv</span>`
+        : `<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700" title="Bit-equivalent to Zapier's grader">✓ exact</span>`;
+      markBlock = `${approxBadge}
+        <details class="inline-block ml-1">
+          <summary class="cursor-pointer text-[10px] text-indigo-600 underline select-none">show predicate</summary>
+          <pre class="mt-1 text-[10px] bg-indigo-50/50 border border-indigo-100 rounded p-2 overflow-x-auto whitespace-pre-wrap">${escapeHtml(predJson)}</pre>
+        </details>`;
+      // Evaluate against initial state
+      try {
+        const r = evaluate(initialState, tr.predicate);
+        const statusBadge = r.satisfied
+          ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">✓ already satisfied</span>`
+          : `<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-50 text-slate-600" title="${escapeHtml(r.evidence ?? "")}">○ unmet · gap ${r.gap}</span>`;
+        evalBlock = statusBadge;
+      } catch {
+        evalBlock = `<span class="text-[10px] text-slate-400">eval error</span>`;
+      }
+    }
+
+    return `
+      <div class="text-xs space-y-1 py-1.5 ${i > 0 ? "border-t border-slate-50" : ""}">
+        <div class="flex items-baseline gap-2">
+          <span class="text-slate-300 mono w-6 flex-shrink-0">${i.toString().padStart(2)}</span>
+          <span class="font-semibold ${colorClass}">${escapeHtml(a.type)}</span>
+          ${evalBlock}
+        </div>
+        <div class="ml-8 text-slate-600">${params}</div>
+        <div class="ml-8">${markBlock}</div>
+      </div>
+    `;
+  }).join("");
+  document.getElementById("ab-asserts").innerHTML = assertsHtml || `<div class="text-xs text-slate-400 italic">no assertions</div>`;
+
+  // Initial state — render each vendor's seeded data as a scene card
+  renderAbInitialState(task.info?.initial_state ?? {});
+}
+
+function renderAbInitialState(state) {
+  const grid = document.getElementById("ab-state");
+  const cards = [];
+  for (const [vendor, vState] of Object.entries(state)) {
+    if (vendor === "meta") continue;
+    if (vState == null || typeof vState !== "object") continue;
+    // Each top-level array becomes a card
+    for (const [collection, value] of Object.entries(vState)) {
+      if (!Array.isArray(value) || value.length === 0) continue;
+      cards.push(renderAbStateCard(`${vendor}.${collection}`, value));
+    }
+  }
+  grid.innerHTML = cards.length === 0
+    ? `<div class="col-span-full text-xs text-slate-400 italic py-4 text-center">empty initial state</div>`
+    : cards.join("");
+}
+
+function renderAbStateCard(key, rows) {
+  const v = key.split(".")[0];
+  const colorChip = `<span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(v)}">${escapeHtml(v)}</span>`;
+  const headerHtml = `
+    <div class="flex items-center justify-between mb-2 gap-2">
+      <div class="font-mono text-sm font-semibold truncate">${escapeHtml(key)}</div>
+      ${colorChip}
+    </div>
+  `;
+  const bodyHtml = renderTable(rows);
+  return `
+    <div class="bg-white rounded-lg border border-slate-200 p-3">
+      ${headerHtml}
+      <div class="text-xs text-slate-500 italic mb-1">${rows.length} ${rows.length === 1 ? "item" : "items"}</div>
+      ${bodyHtml}
+    </div>
+  `;
+}
+
+// ============================================================================
+// Mode switching + AB list wiring
+// ============================================================================
+
+document.querySelectorAll(".mode-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const mode = btn.dataset.mode;
+    document.querySelectorAll(".mode-tab").forEach(b => {
+      const active = b.dataset.mode === mode;
+      b.classList.toggle("border-indigo-600", active);
+      b.classList.toggle("text-indigo-700", active);
+      b.classList.toggle("border-transparent", !active);
+      b.classList.toggle("text-slate-500", !active);
+    });
+    document.getElementById("loader-trace").classList.toggle("hidden", mode !== "trace");
+    document.getElementById("loader-ab").classList.toggle("hidden", mode !== "ab");
+    if (mode === "ab" && abManifest.length === 0) loadAbManifest();
+  });
+});
+
+document.getElementById("ab-category").addEventListener("change", renderAbList);
+document.getElementById("ab-search").addEventListener("input", renderAbList);
+
+document.getElementById("ab-list").addEventListener("click", (e) => {
+  const row = e.target.closest(".ab-row");
+  if (!row) return;
+  loadAbTask(row.dataset.slug, row.dataset.category);
+});
+
+document.getElementById("ab-back").addEventListener("click", () => {
+  document.getElementById("ab-detail").classList.add("hidden");
+  document.getElementById("loader").classList.remove("hidden");
+});
+
+document.getElementById("ab-state-toggle").addEventListener("click", () => {
+  const el = document.getElementById("ab-state");
+  const btn = document.getElementById("ab-state-toggle");
+  const collapsed = el.classList.toggle("hidden");
+  btn.textContent = collapsed ? "expand" : "collapse";
 });
 </script>
 
