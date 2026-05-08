@@ -1,11 +1,10 @@
-// Generate one static HTML page per AutomationBench task.
-//
-// Reads viewer/ab-tasks/manifest.json + every viewer/ab-tasks/<cat>/<slug>.json
-// and writes viewer/tasks/<slug>/index.html — fully pre-rendered, with
-// <title>, <meta description>, and OpenGraph tags so links unfurl.
+// Generate static HTML for AutomationBench:
+//   /automationbench/                          — landing (7 category cards)
+//   /automationbench/<category>/               — category page (~100 task cards)
+//   /automationbench/<category>/<slug>/        — task detail page
 //
 // Run: bun run scripts/build-task-pages.ts
-// Output: viewer/tasks/<slug>/index.html (gitignored, regenerated each deploy)
+// Output gitignored under viewer/automationbench/. Regenerated each deploy.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
@@ -13,7 +12,7 @@ import { join, dirname, resolve } from "node:path";
 const ROOT       = resolve(import.meta.dirname, "..");
 const VIEWER_DIR = join(ROOT, "viewer");
 const AB_DIR     = join(VIEWER_DIR, "ab-tasks");
-const OUT_DIR    = join(VIEWER_DIR, "tasks");
+const OUT_DIR    = join(VIEWER_DIR, "automationbench");
 const SITE_URL   = "https://scene.daslab.run";
 
 type ManifestEntry = {
@@ -25,6 +24,8 @@ type ManifestEntry = {
   user_prompt: string;
   tool_families: string[];
 };
+
+type CategorySummary = { count: number; avg_tools: number; avg_assertions: number };
 
 type TaskFile = {
   example_id?: number;
@@ -65,6 +66,9 @@ const CATEGORY_BLURB: Record<string, string> = {
   support: "ticket triage, customer comms, knowledge base",
 };
 
+// Stable display order: simple first, then alpha
+const CATEGORY_ORDER = ["simple", "finance", "hr", "marketing", "operations", "sales", "support"];
+
 function vendorColor(name: string): string {
   const v = name.split("_")[0];
   return VENDOR_COLOR[v] ?? "bg-slate-100 text-slate-700";
@@ -78,23 +82,200 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-
-function escapeAttr(s: string): string {
-  return escapeHtml(s);
-}
+const escapeAttr = escapeHtml;
 
 function truncate(s: string, n: number): string {
   if (s.length <= n) return s;
   return s.slice(0, n - 1) + "…";
 }
 
-function complexity(entry: ManifestEntry): { label: string; color: string } {
+function complexity(entry: { n_tools: number; n_assertions: number }): { label: string; color: string } {
   const c = entry.n_tools + entry.n_assertions;
   if (c < 5) return { label: "easy", color: "text-emerald-600" };
   if (c < 15) return { label: "medium", color: "text-amber-600" };
   if (c < 30) return { label: "hard", color: "text-orange-600" };
   return { label: "very hard", color: "text-rose-600" };
 }
+
+// ============================================================================
+// Layout primitives
+// ============================================================================
+
+function renderLayout(opts: {
+  title: string;
+  description: string;
+  canonical: string;
+  ogTitle: string;
+  ogDescription: string;
+  rootRel: string; // relative path back to viewer/ root, ending in "/" (e.g. "../../../")
+  breadcrumb: string;
+  body: string;
+  footerScript?: string;
+}): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>${escapeHtml(opts.title)}</title>
+  <meta name="description" content="${escapeAttr(opts.description)}" />
+  <link rel="canonical" href="${opts.canonical}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="${escapeAttr(opts.ogTitle)}" />
+  <meta property="og:description" content="${escapeAttr(opts.ogDescription)}" />
+  <meta property="og:url" content="${opts.canonical}" />
+  <meta property="og:site_name" content="scene-otel" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${escapeAttr(opts.ogTitle)}" />
+  <meta name="twitter:description" content="${escapeAttr(opts.ogDescription)}" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+    .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+<header class="border-b bg-white">
+  <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
+    <div class="min-w-0">
+      <a href="${opts.rootRel}" class="text-xs text-slate-500 hover:text-slate-900 mono">scene-otel · scene scrubber</a>
+      <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5 flex-wrap">${opts.breadcrumb}</div>
+    </div>
+    <a href="https://github.com/daslabhq/scene-otel" class="text-sm text-slate-600 hover:text-slate-900 underline whitespace-nowrap">GitHub →</a>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto p-6 space-y-4">
+${opts.body}
+</main>
+
+<footer class="max-w-6xl mx-auto px-6 py-10 text-xs text-slate-400">
+  scene-otel · MIT · <a href="https://github.com/daslabhq/scene-otel" class="underline">github.com/daslabhq/scene-otel</a>
+</footer>
+${opts.footerScript ?? ""}
+</body>
+</html>
+`;
+}
+
+// ============================================================================
+// Task row (used on category landing + browser on /)
+// ============================================================================
+
+function renderTaskRowAnchor(entry: ManifestEntry, hrefSlugSegment: string): string {
+  const families = entry.tool_families
+    .slice(0, 5)
+    .map((v) => `<span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(v)}">${escapeHtml(v)}</span>`)
+    .join(" ");
+  const more =
+    entry.tool_families.length > 5 ? `<span class="text-[10px] text-slate-400">+${entry.tool_families.length - 5}</span>` : "";
+  const cmplx = complexity(entry);
+  return `
+    <a href="${escapeAttr(hrefSlugSegment)}/" class="block px-4 py-2.5 hover:bg-slate-50 transition border-b border-slate-100 last:border-b-0">
+      <div class="flex items-baseline justify-between gap-3">
+        <div class="font-mono text-xs font-semibold truncate">${escapeHtml(entry.task_id)}</div>
+        <div class="text-[10px] mono ${cmplx.color} whitespace-nowrap flex-shrink-0">
+          ${entry.n_tools} tools · ${entry.n_assertions} assertions · ${cmplx.label}
+        </div>
+      </div>
+      <div class="text-xs text-slate-600 mt-1 line-clamp-1">${escapeHtml(entry.user_prompt)}</div>
+      <div class="mt-1.5 flex flex-wrap gap-1">${families}${more}</div>
+    </a>`;
+}
+
+// ============================================================================
+// AB landing page
+// ============================================================================
+
+function renderAbLanding(manifest: ManifestEntry[], summary: Record<string, CategorySummary>): string {
+  const total = manifest.length;
+  const totalCats = CATEGORY_ORDER.filter((c) => summary[c]).length;
+  const cards = CATEGORY_ORDER.filter((c) => summary[c])
+    .map((cat) => {
+      const s = summary[cat];
+      const blurb = CATEGORY_BLURB[cat] ?? "";
+      return `
+        <a href="${escapeAttr(cat)}/" class="block bg-white rounded-lg border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-sm transition">
+          <div class="flex items-baseline justify-between mb-2">
+            <div class="font-semibold capitalize">${escapeHtml(cat)}</div>
+            <div class="text-xs text-slate-500 mono">${s.count} tasks</div>
+          </div>
+          <div class="text-xs text-slate-500 italic mb-3">${escapeHtml(blurb)}</div>
+          <div class="text-[11px] text-slate-500 mono">avg ${s.avg_tools.toFixed(1)} tools · avg ${s.avg_assertions.toFixed(1)} assertions</div>
+        </a>`;
+    })
+    .join("");
+
+  const body = `
+    <section class="bg-white rounded-lg border border-slate-200 p-6">
+      <div class="text-[10px] uppercase tracking-wider text-slate-500">benchmark</div>
+      <h1 class="text-2xl md:text-3xl font-semibold mt-1">AutomationBench</h1>
+      <p class="text-sm text-slate-600 mt-3 leading-relaxed max-w-2xl">
+        Zapier's <a href="https://github.com/zapier/AutomationBench" class="underline hover:text-slate-900">${total} benchmark tasks</a> for testing AI agents on multi-step business workflows. Each task ships with declared tools, success-criteria assertions, and a seeded initial world state — see exactly what the agent must do, not just whether it succeeded.
+      </p>
+      <div class="text-xs text-slate-400 mt-3 mono">${total} tasks · ${totalCats} categories</div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      ${cards}
+    </section>`;
+
+  const breadcrumb = `<span class="mono">automationbench</span>`;
+
+  return renderLayout({
+    title: "AutomationBench · scene-otel",
+    description: `Browse Zapier's ${total} AutomationBench tasks for AI agents — finance, sales, support, HR, marketing, operations, simple. Each task has declared tools, success assertions, and seeded world state.`,
+    canonical: `${SITE_URL}/automationbench/`,
+    ogTitle: "AutomationBench — Zapier's agent workflow benchmark",
+    ogDescription: `${total} multi-step agent tasks across 7 business categories. Click any to see exactly what the agent must do.`,
+    rootRel: "../",
+    breadcrumb,
+    body,
+  });
+}
+
+// ============================================================================
+// Category landing page
+// ============================================================================
+
+function renderCategoryLanding(category: string, summary: CategorySummary, tasksInCat: ManifestEntry[]): string {
+  const blurb = CATEGORY_BLURB[category] ?? "";
+  const sorted = [...tasksInCat].sort((a, b) => a.slug.localeCompare(b.slug));
+  const rows = sorted.map((e) => renderTaskRowAnchor(e, e.slug)).join("");
+
+  const body = `
+    <section class="bg-white rounded-lg border border-slate-200 p-6">
+      <div class="text-[10px] uppercase tracking-wider text-slate-500">automationbench category</div>
+      <h1 class="text-2xl font-semibold mt-1 capitalize">${escapeHtml(category)}</h1>
+      <p class="text-sm text-slate-600 mt-2 italic">${escapeHtml(blurb)}</p>
+      <div class="text-xs text-slate-400 mt-3 mono">${summary.count} tasks · avg ${summary.avg_tools.toFixed(1)} tools · avg ${summary.avg_assertions.toFixed(1)} assertions</div>
+    </section>
+
+    <section class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      ${rows}
+    </section>`;
+
+  const breadcrumb = `
+    <a href="../" class="hover:text-slate-700 underline">automationbench</a>
+    <span>›</span>
+    <span class="mono capitalize">${escapeHtml(category)}</span>`;
+
+  return renderLayout({
+    title: `${category} · AutomationBench · scene-otel`,
+    description: `${summary.count} ${category} tasks from Zapier's AutomationBench: ${blurb}.`,
+    canonical: `${SITE_URL}/automationbench/${category}/`,
+    ogTitle: `AutomationBench · ${category}`,
+    ogDescription: `${summary.count} ${category} agent tasks — ${blurb}.`,
+    rootRel: "../../",
+    breadcrumb,
+    body,
+  });
+}
+
+// ============================================================================
+// Task detail page
+// ============================================================================
 
 function renderToolsCard(tools: string[]): string {
   const grouped: Record<string, string[]> = {};
@@ -113,13 +294,13 @@ function renderToolsCard(tools: string[]): string {
     )
     .join("");
   return `
-    <div class="bg-white rounded-lg border border-slate-200 p-4">
+    <section class="bg-white rounded-lg border border-slate-200 p-4">
       <div class="flex items-center justify-between mb-3">
         <div class="text-sm font-semibold">declared tools</div>
         <div class="text-xs text-slate-500">${tools.length} tools across ${vendors} vendor${vendors === 1 ? "" : "s"}</div>
       </div>
       <div class="space-y-1.5">${inner || `<div class="text-xs text-slate-400 italic">no tools declared</div>`}</div>
-    </div>`;
+    </section>`;
 }
 
 function renderAssertionsCard(asserts: { type: string; [k: string]: any }[]): string {
@@ -149,18 +330,17 @@ function renderAssertionsCard(asserts: { type: string; [k: string]: any }[]): st
     })
     .join("");
   return `
-    <div class="bg-white rounded-lg border border-slate-200 p-4">
+    <section class="bg-white rounded-lg border border-slate-200 p-4">
       <div class="flex items-center justify-between mb-3">
         <div class="text-sm font-semibold">assertions <span class="text-xs text-slate-500 font-normal">(success criteria the agent must satisfy)</span></div>
         <div class="text-xs text-slate-500">${asserts.length} predicate${asserts.length === 1 ? "" : "s"}</div>
       </div>
       <div class="space-y-1.5 mono">${rows || `<div class="text-xs text-slate-400 italic">no assertions</div>`}</div>
-    </div>`;
+    </section>`;
 }
 
 function renderTable(rows: any[]): string {
   if (!Array.isArray(rows) || rows.length === 0) return "";
-  // Use up to 3 rows for inline preview, all keys from union
   const sample = rows.slice(0, 5);
   const keys = new Set<string>();
   for (const r of sample) {
@@ -192,8 +372,7 @@ function renderInitialStateCards(state: Record<string, any>): string {
     for (const [collection, value] of Object.entries(vState as Record<string, any>)) {
       if (!Array.isArray(value) || value.length === 0) continue;
       const key = `${vendor}.${collection}`;
-      const v = vendor;
-      const colorChip = `<span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(v)}">${escapeHtml(v)}</span>`;
+      const colorChip = `<span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(vendor)}">${escapeHtml(vendor)}</span>`;
       cards.push(`
         <div class="bg-white rounded-lg border border-slate-200 p-3">
           <div class="flex items-center justify-between mb-2 gap-2">
@@ -209,7 +388,7 @@ function renderInitialStateCards(state: Record<string, any>): string {
   return cards.join("");
 }
 
-function renderPage(entry: ManifestEntry, task: TaskFile, prev: ManifestEntry | null, next: ManifestEntry | null): string {
+function renderTaskPage(entry: ManifestEntry, task: TaskFile, prev: ManifestEntry | null, next: ManifestEntry | null): string {
   const sys = task.prompt?.find((m) => m.role === "system")?.content ?? "(no system prompt)";
   const usr = task.prompt?.find((m) => m.role === "user")?.content ?? "(no user prompt)";
   const tools = task.info?.zapier_tools ?? [];
@@ -221,125 +400,73 @@ function renderPage(entry: ManifestEntry, task: TaskFile, prev: ManifestEntry | 
     .slice(0, 8)
     .map((v) => `<span class="text-[10px] px-1.5 py-0.5 rounded ${vendorColor(v)}">${escapeHtml(v)}</span>`)
     .join(" ");
-  const moreFamilies = entry.tool_families.length > 8 ? `<span class="text-[10px] text-slate-400">+${entry.tool_families.length - 8}</span>` : "";
+  const moreFamilies =
+    entry.tool_families.length > 8 ? `<span class="text-[10px] text-slate-400">+${entry.tool_families.length - 8}</span>` : "";
 
-  const prevLink = prev ? `<a href="../${escapeAttr(prev.slug)}/" class="text-xs text-slate-500 hover:text-slate-900">← ${escapeHtml(prev.task_id)}</a>` : `<span></span>`;
-  const nextLink = next ? `<a href="../${escapeAttr(next.slug)}/" class="text-xs text-slate-500 hover:text-slate-900 text-right">${escapeHtml(next.task_id)} →</a>` : `<span></span>`;
-  const categoryBlurb = CATEGORY_BLURB[entry.category] ?? "";
+  const prevLink = prev
+    ? `<a href="../${escapeAttr(prev.slug)}/" class="text-xs text-slate-500 hover:text-slate-900 truncate max-w-xs">← ${escapeHtml(prev.task_id)}</a>`
+    : `<span></span>`;
+  const nextLink = next
+    ? `<a href="../${escapeAttr(next.slug)}/" class="text-xs text-slate-500 hover:text-slate-900 text-right truncate max-w-xs">${escapeHtml(next.task_id)} →</a>`
+    : `<span></span>`;
 
-  // The page-side script that progressively enhances each assertion with
-  // mark's translated predicate + a satisfied/unmet badge against the
-  // seeded initial_state. Failure is silent — first paint already shows the
-  // raw assertion data.
+  const breadcrumb = `
+    <a href="../../" class="hover:text-slate-700 underline">automationbench</a>
+    <span>›</span>
+    <a href="../" class="hover:text-slate-700 capitalize">${escapeHtml(entry.category)}</a>
+    <span>›</span>
+    <span class="mono truncate">${escapeHtml(entry.slug)}</span>`;
+
   const taskJson = JSON.stringify({ assertions: asserts, initial_state: initialState });
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>${escapeHtml(entry.task_id)} · AutomationBench task · scene-otel</title>
-  <meta name="description" content="${escapeAttr(desc)}" />
-  <link rel="canonical" href="${SITE_URL}/tasks/${escapeAttr(entry.slug)}/" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="${escapeAttr(entry.task_id)} · AutomationBench task" />
-  <meta property="og:description" content="${escapeAttr(desc)}" />
-  <meta property="og:url" content="${SITE_URL}/tasks/${escapeAttr(entry.slug)}/" />
-  <meta property="og:site_name" content="scene-otel" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${escapeAttr(entry.task_id)} · AutomationBench" />
-  <meta name="twitter:description" content="${escapeAttr(desc)}" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif; }
-    .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
-
-<header class="border-b bg-white">
-  <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
-    <div class="min-w-0">
-      <a href="../../" class="text-xs text-slate-500 hover:text-slate-900 mono">scene-otel · scene scrubber</a>
-      <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
-        <a href="../../?mode=ab" class="hover:text-slate-700 underline">browse AutomationBench</a>
-        <span>›</span>
-        <a href="../../?mode=ab&amp;category=${escapeAttr(entry.category)}" class="hover:text-slate-700 capitalize">${escapeHtml(entry.category)}</a>
-        <span>›</span>
-        <span class="mono truncate">${escapeHtml(entry.slug)}</span>
+  const body = `
+    <section class="bg-white rounded-lg border border-slate-200 p-6">
+      <div class="text-[10px] uppercase tracking-wider text-slate-500">automationbench task</div>
+      <h1 class="font-mono text-xl md:text-2xl font-semibold mt-1 break-all">${escapeHtml(entry.task_id)}</h1>
+      <div class="text-xs text-slate-500 mt-1">
+        ${tools.length} tools · ${asserts.length} assertions · <span class="${cmplx.color} font-medium">${cmplx.label}</span>${task.example_id != null ? ` · example_id ${escapeHtml(String(task.example_id))}` : ""}
       </div>
-    </div>
-    <a href="https://github.com/daslabhq/scene-otel" class="text-sm text-slate-600 hover:text-slate-900 underline whitespace-nowrap">GitHub →</a>
-  </div>
-</header>
+      ${CATEGORY_BLURB[entry.category] ? `<div class="text-xs text-slate-400 italic mt-0.5">${escapeHtml(entry.category)} — ${escapeHtml(CATEGORY_BLURB[entry.category])}</div>` : ""}
+      <div class="mt-3 flex flex-wrap gap-1">${families}${moreFamilies}</div>
+    </section>
 
-<main class="max-w-6xl mx-auto p-6 space-y-4">
-
-  <!-- Hero -->
-  <section class="bg-white rounded-lg border border-slate-200 p-6">
-    <div class="flex items-start justify-between gap-4 flex-wrap">
-      <div class="min-w-0 flex-1">
-        <div class="text-[10px] uppercase tracking-wider text-slate-500">automationbench task</div>
-        <h1 class="font-mono text-xl md:text-2xl font-semibold mt-1 break-all">${escapeHtml(entry.task_id)}</h1>
-        <div class="text-xs text-slate-500 mt-1">
-          ${tools.length} tools · ${asserts.length} assertions · <span class="${cmplx.color} font-medium">${cmplx.label}</span>${task.example_id != null ? ` · example_id ${escapeHtml(String(task.example_id))}` : ""}
-        </div>
-        ${categoryBlurb ? `<div class="text-xs text-slate-400 italic mt-0.5">${escapeHtml(entry.category)} — ${escapeHtml(categoryBlurb)}</div>` : ""}
-        <div class="mt-3 flex flex-wrap gap-1">${families}${moreFamilies}</div>
+    <section class="bg-white rounded-lg border border-slate-200 p-4 space-y-3">
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">user prompt</div>
+        <div class="text-sm text-slate-900 whitespace-pre-wrap leading-relaxed">${escapeHtml(usr)}</div>
       </div>
-    </div>
-  </section>
+      <details class="border-t border-slate-100 pt-3">
+        <summary class="cursor-pointer text-[10px] uppercase tracking-wider text-slate-500 select-none hover:text-slate-700">system prompt</summary>
+        <div class="text-sm text-slate-700 whitespace-pre-wrap mt-2">${escapeHtml(sys)}</div>
+      </details>
+    </section>
 
-  <!-- Prompts -->
-  <section class="bg-white rounded-lg border border-slate-200 p-4 space-y-3">
-    <div>
-      <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">user prompt</div>
-      <div class="text-sm text-slate-900 whitespace-pre-wrap leading-relaxed">${escapeHtml(usr)}</div>
-    </div>
-    <details class="border-t border-slate-100 pt-3">
-      <summary class="cursor-pointer text-[10px] uppercase tracking-wider text-slate-500 select-none hover:text-slate-700">system prompt</summary>
-      <div class="text-sm text-slate-700 whitespace-pre-wrap mt-2">${escapeHtml(sys)}</div>
-    </details>
-  </section>
+    ${renderToolsCard(tools)}
 
-  <!-- Tools -->
-  ${renderToolsCard(tools)}
+    ${renderAssertionsCard(asserts)}
 
-  <!-- Assertions -->
-  ${renderAssertionsCard(asserts)}
+    <section class="bg-white rounded-lg border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <div class="text-sm font-semibold">initial world state <span class="text-xs text-slate-500 font-normal">(seeded data the agent starts with)</span></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">${renderInitialStateCards(initialState)}</div>
+    </section>
 
-  <!-- Initial state -->
-  <section class="bg-white rounded-lg border border-slate-200 p-4">
-    <div class="flex items-center justify-between mb-3">
-      <div class="text-sm font-semibold">initial world state <span class="text-xs text-slate-500 font-normal">(seeded data the agent starts with)</span></div>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">${renderInitialStateCards(initialState)}</div>
-  </section>
+    <nav class="flex items-center justify-between gap-3 pt-2">
+      ${prevLink}
+      <a href="../" class="text-xs text-slate-500 hover:text-slate-900 underline whitespace-nowrap">all ${escapeHtml(entry.category)} tasks</a>
+      ${nextLink}
+    </nav>
 
-  <!-- Prev/next nav -->
-  <nav class="flex items-center justify-between pt-2">
-    ${prevLink}
-    <a href="../../?mode=ab" class="text-xs text-slate-500 hover:text-slate-900 underline">all tasks</a>
-    ${nextLink}
-  </nav>
+    <script id="task-data" type="application/json">${escapeHtml(taskJson)}</script>`;
 
-</main>
-
-<footer class="max-w-6xl mx-auto px-6 py-10 text-xs text-slate-400">
-  scene-otel · MIT · <a href="https://github.com/daslabhq/scene-otel" class="underline">github.com/daslabhq/scene-otel</a>
-</footer>
-
-<!-- Frozen task data, consumed by progressive-enhancement script below. -->
-<script id="task-data" type="application/json">${escapeHtml(taskJson)}</script>
-
+  // Progressive enhancement script: translate each assertion via mark and
+  // attach a satisfied/unmet badge. Page is at depth 3 → ../../../ to reach
+  // the viewer root where mark.bundle.js lives.
+  const footerScript = `
 <script type="module">
-  // Progressive enhancement — translate each assertion to a mark Predicate
-  // and evaluate it against the seeded initial_state, so each row gets a
-  // ✓/✗ badge + collapsible predicate JSON. First paint already shows the
-  // raw assertions, so this is best-effort: silent-fail if the bundle is
-  // unavailable.
   try {
-    const { evaluate, translate, SUPPORTED_TYPES } = await import("../../mark.bundle.js");
+    const { evaluate, translate } = await import("../../../mark.bundle.js");
     const data = JSON.parse(document.getElementById("task-data").textContent);
     const rows = document.querySelectorAll("[data-assertion-idx]");
     function escHtml(s) {
@@ -372,43 +499,73 @@ function renderPage(entry: ManifestEntry, task: TaskFile, prev: ManifestEntry | 
       } catch {}
     });
   } catch (e) {
-    // best-effort progressive enhancement — silent on failure
+    // best-effort progressive enhancement
   }
-</script>
+</script>`;
 
-</body>
-</html>
-`;
+  return renderLayout({
+    title: `${entry.task_id} · AutomationBench task · scene-otel`,
+    description: desc,
+    canonical: `${SITE_URL}/automationbench/${entry.category}/${entry.slug}/`,
+    ogTitle: `${entry.task_id} · AutomationBench task`,
+    ogDescription: desc,
+    rootRel: "../../../",
+    breadcrumb,
+    body,
+    footerScript,
+  });
 }
+
+// ============================================================================
+// Main
+// ============================================================================
 
 function main() {
   const manifest: ManifestEntry[] = JSON.parse(readFileSync(join(AB_DIR, "manifest.json"), "utf8"));
-  // Stable order within category for prev/next
+  const summary: Record<string, CategorySummary> = JSON.parse(readFileSync(join(AB_DIR, "summary.json"), "utf8"));
+
   const byCategory: Record<string, ManifestEntry[]> = {};
   for (const e of manifest) (byCategory[e.category] ??= []).push(e);
   for (const cat of Object.keys(byCategory)) byCategory[cat].sort((a, b) => a.slug.localeCompare(b.slug));
 
-  let written = 0;
+  // 1. AB landing
+  mkdirSync(OUT_DIR, { recursive: true });
+  writeFileSync(join(OUT_DIR, "index.html"), renderAbLanding(manifest, summary));
+
+  // 2. Per-category landings + 3. per-task pages
+  let taskPages = 0;
+  let categoryPages = 0;
   for (const cat of Object.keys(byCategory)) {
     const list = byCategory[cat];
+    const catSummary = summary[cat];
+    if (!catSummary) {
+      console.warn(`skip category ${cat}: no summary`);
+      continue;
+    }
+    const catDir = join(OUT_DIR, cat);
+    mkdirSync(catDir, { recursive: true });
+    writeFileSync(join(catDir, "index.html"), renderCategoryLanding(cat, catSummary, list));
+    categoryPages++;
+
     for (let i = 0; i < list.length; i++) {
       const entry = list[i];
       const taskPath = join(AB_DIR, entry.category, `${entry.slug}.json`);
       if (!existsSync(taskPath)) {
-        console.warn(`skip ${entry.slug}: file missing`);
+        console.warn(`skip ${entry.slug}: task file missing`);
         continue;
       }
       const task: TaskFile = JSON.parse(readFileSync(taskPath, "utf8"));
       const prev = i > 0 ? list[i - 1] : null;
       const next = i < list.length - 1 ? list[i + 1] : null;
-      const html = renderPage(entry, task, prev, next);
-      const outPath = join(OUT_DIR, entry.slug, "index.html");
+      const html = renderTaskPage(entry, task, prev, next);
+      const outPath = join(catDir, entry.slug, "index.html");
       mkdirSync(dirname(outPath), { recursive: true });
       writeFileSync(outPath, html);
-      written++;
+      taskPages++;
     }
   }
-  console.log(`wrote ${written} task pages → viewer/tasks/`);
+
+  console.log(`wrote 1 landing + ${categoryPages} category pages + ${taskPages} task pages → viewer/automationbench/`);
 }
 
 main();

@@ -6,6 +6,7 @@ bun.lock
 test-results/
 playwright-report/
 __pycache__/
-# Generated per-task static pages — built by scripts/build-task-pages.ts
-# during the GitHub Pages deploy. No need to track 800+ generated files.
-viewer/tasks/
+# Generated AutomationBench static pages — built by
+# scripts/build-task-pages.ts during the GitHub Pages deploy.
+# No need to track 800+ generated files.
+viewer/automationbench/
