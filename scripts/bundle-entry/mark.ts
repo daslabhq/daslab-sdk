@@ -1,6 +1,6 @@
-// Auto-generated entry for the viewer's mark bundle.
+// Auto-generated entry for the viewer's autocheck bundle.
 // Re-exports the public API the viewer needs.
-export { evaluate } from "mark";
-export { resolve, lookup } from "mark";
-export { translate, SUPPORTED_TYPES } from "mark/translate/automationbench";
-export type { Predicate, EvalResult } from "mark";
+export { runCheck } from "autocheck";
+export { resolve, lookup } from "autocheck";
+export { translate, SUPPORTED_TYPES } from "autocheck/translate/automationbench";
+export type { CheckExpr, CheckResult } from "autocheck";

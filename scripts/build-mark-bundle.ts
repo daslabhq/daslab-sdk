@@ -1,16 +1,20 @@
 #!/usr/bin/env bun
 /**
- * Bundle mark + the AutomationBench translator into a single browser ESM
- * file the scene-otel viewer can load directly.
+ * Bundle autocheck + the AutomationBench translator into a single browser
+ * ESM file the scene-otel viewer can load directly.
  *
  * Why bundling: the viewer is a static HTML page deployed to GitHub Pages;
- * it can't `import` from a sibling package. We compile mark to one file
- * and ship it alongside index.html.
+ * it can't `import` from a sibling package. We compile autocheck to one
+ * file and ship it alongside index.html.
  *
- * Run before pushing if either mark/ or the bundle entry changes:
+ * Run before pushing if either autocheck/ or the bundle entry changes:
  *   bun scripts/build-mark-bundle.ts
  *
  * Output: viewer/mark.bundle.js (~15-25 KB, one file, ESM, browser-ready).
+ *
+ * NOTE: the output filename is kept as `mark.bundle.js` for backward
+ * compatibility with deployed viewer/index.html until the viewer is updated
+ * to reference autocheck.bundle.js.
  */
 
 import { writeFileSync, mkdirSync } from "node:fs";
@@ -25,12 +29,12 @@ const OUT = join(REPO, "viewer", "mark.bundle.js");
 
 mkdirSync(ENTRY_DIR, { recursive: true });
 
-writeFileSync(ENTRY, `// Auto-generated entry for the viewer's mark bundle.
+writeFileSync(ENTRY, `// Auto-generated entry for the viewer's autocheck bundle.
 // Re-exports the public API the viewer needs.
-export { evaluate } from "mark";
-export { resolve, lookup } from "mark";
-export { translate, SUPPORTED_TYPES } from "mark/translate/automationbench";
-export type { Predicate, EvalResult } from "mark";
+export { runCheck } from "autocheck";
+export { resolve, lookup } from "autocheck";
+export { translate, SUPPORTED_TYPES } from "autocheck/translate/automationbench";
+export type { CheckExpr, CheckResult } from "autocheck";
 `);
 
 const result = await Bun.build({
